@@ -1,0 +1,33 @@
+<h2>uint8_t - 符号なし8bit整数型</h2>
+
+「uint8_t」は符号なし8bit整数型です。「stdint.h」をインクルードすることで使えます。
+
+<pre>
+# 符号なし8bit整数型
+uint8_t
+</pre>
+
+符号なし8bit整数型が表現できる整数の最大値は「255」、最小値は「0」です。
+
+最大値は「<a href="/blog/20201123084622.html">UINT8_MAX</a>」というマクロで定義されています。
+
+<h3>uint8_tのサンプルコード</h3>
+
+uint8_tを使ったサンプルコードです。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+int main() {
+  uint8_t num = 255;
+  
+  printf("%u\n", num);
+}
+</pre>
+
+出力結果。
+
+<pre>
+255
+</pre>
