@@ -1,0 +1,81 @@
+<h2>ローカル変数の宣言</h2>
+
+変数の宣言は以下の構文で行います。
+
+<pre>
+型名 変数名;
+</pre>
+
+関数の中で記述された変数宣言は、ローカル変数の宣言になります。
+
+<pre>
+int main (void) {
+  型名 変数名;
+}
+</pre>
+
+int32_t型の変数宣言をするサンプルを書いてみます。
+
+<pre>
+#include <stdint.h>
+
+int main (void) {
+  int32_t num;
+}
+</pre>
+
+<h3>ローカル変数の初期化</h3>
+
+変数宣言は、変数の初期化と同時に行うことができます。
+
+<pre>
+#include <stdint.h>
+
+int main (void) {
+  int32_t num = 1;
+}
+</pre>
+
+C言語では、変数の初期化を行わない場合に、自動的に0に初期化されず、値は不定になるということに注意してください。
+
+<a href="https://tutorial.perlzemi.com/blog/20161107147852.html">Perlの変数</a>の場合は<a href="https://tutorial.perlzemi.com/blog/20100220126425.html">未定義値undef</a>で初期化される点が異なります。
+
+<h3>ローカル変数のスコープ</h3>
+
+C言語のローカル変数のスコープについて書いておきます。C言語ではスコープを「{}」を使って記述できます。スコープの中で変数宣言を行うことができます。変数はスコープの中でだけ参照することができます。関数の中でだけスコープを使用できます。C言語のスコープは、変数が見える位置について、<a href="https://tutorial.perlzemi.com/blog/20110128130016.html">Perlのスコープ</a>と似ています。
+
+<pre>
+#include <stdint.h>
+
+int main (void) {
+  {
+    int32_t num1;
+    
+    1 + 1;
+    
+    int32_t num2;
+  }
+}
+// この位置ではnum1, num2は見えない。
+</pre>
+
+C言語のスコープの中で宣言された変数は、スコープの先頭で宣言されたものだとみなされます。つまり上記は、以下と同じ意味になります。これはPerlと異なる点です。
+
+<pre>
+#include <stdint.h>
+
+int main (void) {
+  {
+    int32_t num1;
+    int32_t num2;
+    
+    1 + 1;
+  }
+}
+</pre>
+
+Perlのスコープとは異なり、C言語のスコープでは、<a href="https://tutorial.perlzemi.com/blog/20131010138141.html">GC</a>は行われません。
+
+<h3>グローバル変数</h3>
+
+C言語のグローバル変数については、別の記事で解説します。
