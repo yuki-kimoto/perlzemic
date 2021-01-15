@@ -4,8 +4,44 @@ C99の新機能の紹介です。
 
 <h3>「//」による一行コメント</h3>
 
-「//」による一行コメントが、正式に<a href="/blog/20201206125815.html">C99</a>で採用されました。
+「//」による一行コメントが、正式にC99で採用されました。
 
 <pre>
 // コメント
 </pre>
+
+<h3>forのループ変数初期化部で変数宣言が可能に</h3>
+
+forのループ変数初期化部で変数宣言が可能になりました。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+int main(void) {
+  
+  int32_t total = 0;
+
+  // forのループ変数初期化部で変数宣言を行う
+  for (int32_t i = 0; i < 10; i++) {
+    total += i;
+  }
+  
+  printf("%d\n", total);
+}
+</pre>
+
+<h3>確実な幅を指定できる整数型</h3>
+
+確実な幅を指定できる整数型が利用できるようになりました。
+
+<ul>
+  <li><a href="/blog/20201117090747.html">int8_t - 符号あり8bit整数型</a></li>
+  <li><a href="/blog/20201126090559.html">int16_t - 符号あり16bit整数型</a></li>
+  <li><a href="/blog/20201130082751.html">int32_t - 符号あり32bit整数型</a></li>
+  <li><a href="/blog/20201127082751.html">int64_t - 符号あり64bit整数型</a></li>
+  <li><a href="/blog/20201122084622.html">uint8_t - 符号なし8bit整数型</a></li>
+  <li><a href="/blog/20201120084622.html">uint16_t - 符号なし16bit整数型</a></li>
+  <li><a href="/blog/20201111150850.html">uint32_t - 符号なし32bit整数型</a></li>
+  <li><a href="/blog/20201109150850.html">uint64_t - 符号なし64bit整数型</a></li>
+</ul>
