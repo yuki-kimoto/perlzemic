@@ -11,7 +11,7 @@ enum {
 };
 </pre>
 
-列挙型enumを使ったサンプルです。enumは、switch文と組み合わせて使うことが多いので、switch文のサンプルにしました。
+列挙型enumを使ったサンプルです。enumは、<a href="/blog/20210122133501.html">switch文</a>と組み合わせて使うことが多いので、switch文のサンプルにしました。
 
 <pre>
 #include <stdint.h>
@@ -149,3 +149,61 @@ elsif ($id eq 'unless') {
 バッファオーバーランを防ぐために、比較文字数を制限するstrncmp関数を使っても、そもそも途中で文字列が切れるという可能性もあります。
 
 このようにC言語の文字列では、考えるべきことがたくさんあるので、列挙型で整数を定義しておくのが、やりやすいです。
+
+<h4>分割コンパイルする場合は、列挙型はどこで定義しますか?</h4>
+
+分割コンパイルを使ったヘッダとソースコードに分けてコンパイルする場合の構成としては、列挙型はヘッダファイルに記述します。
+
+マクロ定数や列挙型などの定数定義は、ヘッダに記述します。
+
+<b>spvm_op.h</b>
+
+<pre>
+enum {
+  SPVM_OP_C_ID_IF,
+  SPVM_OP_C_ID_UNLESS,
+  SPVM_OP_C_ID_ELSIF,
+  SPVM_OP_C_ID_ELSE,
+  SPVM_OP_C_ID_FOR,
+};
+</pre>
+
+<b>spvm_op.c</b>
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+#include "spvm_op.h"
+
+int main(void) {
+  
+  int32_t id = SPVM_OP_C_ID_UNLESS;
+  
+  switch (id) {
+    case SPVM_OP_C_ID_IF: {
+      printf("IF\n");
+      break;
+    }
+    case SPVM_OP_C_ID_UNLESS: {
+      printf("UNLESS\n");
+      break;
+    }
+    case SPVM_OP_C_ID_ELSIF: {
+      printf("ELSIF\n");
+      break;
+    }
+    case SPVM_OP_C_ID_ELSE: {
+      printf("ELSE\n");
+      break;
+    }
+    case SPVM_OP_C_ID_FOR: {
+      printf("FOR\n");
+      break;
+    }
+    default: {
+      printf("No Match\n");
+    }
+  }
+}
+</pre>
