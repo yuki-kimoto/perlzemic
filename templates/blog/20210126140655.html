@@ -26,8 +26,7 @@ int main(void) {
   
   // for文で合計を求める
   int32_t total = 0;
-  int32_t i;
-  for (i = 0; i < 10; i++) {
+  for (int32_t i = 0; i < 10; i++) {
     // 偶数のときだけ次のループへ移動
     if (i % 2 == 0) {
       continue;
@@ -64,8 +63,7 @@ int main(void) {
   
   // for文で合計を求める
   int32_t total = 0;
-  int32_t i;
-  for (i = 0; i < 10; i++) {
+  for (int32_t i = 0; i < 10; i++) {
     if (i % 2 != 0) {
       total += i;
     }
