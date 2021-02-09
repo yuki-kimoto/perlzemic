@@ -1,6 +1,6 @@
-<h2>構造体 書きかけ</h2>
+<h2>構造体 - 複合データ型</h2>
 
-構造体は、複数の種類のデータを表現できるデータ型です。
+構造体は、複数の種類のデータを保存できる複合データ型です。
 
 書籍のデータを考えてみましょう。書籍は、「ID」「名前」「価格」という情報を持つとします。この情報を構造体で表現します。
 
@@ -8,11 +8,324 @@
 #include <stdint.h>
 
 // 書籍情報を表現する構造体の定義
-struct book {
+struct myapp_book {
   int32_t id;
   const char* name;
   int32_t price;
 };
 </pre>
 
-(書きかけ)
+構造体の要素となるデータをメンバ変数と呼びます。「id」「name」「price」はメンバ変数です。
+
+「id」「price」は「<a href="/blog/20201130082751.html">int32_t型</a>」、「name」は「<a href="/blog/20201208125815.html">const char*型</a>」です。
+
+メンバ変数のアクセスには「構造体変数名.メンバ変数名」とします。
+
+<h3>構造体の使用</h3>
+
+構造体を使用してみましょう。構造体は、型として利用できます。構造体を宣言して、メンバ変数に値を代入して、内容を出力しています。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+// 書籍情報を表現する構造体の定義
+struct myapp_book {
+  int32_t id;
+  const char* name;
+  int32_t price;
+};
+
+int main(void) {
+  // 構造体変数の宣言
+  struct myapp_book book;
+  
+  // メンバ変数に値を代入
+  book.id = 1;
+  book.name = "C99 Book";
+  book.price = 2000;
+  
+  printf("id: %d, name: %s, price: %d\n", book.id, book.name, book.price);
+}
+</pre>
+
+<h3>構造体変数の初期化</h3>
+
+構造体変数は、最初に初期化できます。
+
+<h4>構造体のメンバ変数の順序通りに値を指定</h4>
+
+構造体のメンバ変数の順序通りに値を指定する方法です。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+// 書籍情報を表現する構造体の定義
+struct myapp_book {
+  int32_t id;
+  const char* name;
+  int32_t price;
+};
+
+int main(void) {
+  // 構造体変数の宣言と初期化(メンバ変数の順序通りに値を指定)
+  struct myapp_book book = {1, "C99 Book", 2000};
+  
+  printf("id: %d, name: %s, price: %d\n", book.id, book.name, book.price);
+}
+</pre>
+
+<h4>構造体のメンバ変数名を指定して値を指定</h4>
+
+構造体のメンバ変数名を指定して値を指定できます。これは<a href="/blog/20201206125815.html">C99</a>で追加された構文です。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+// 書籍情報を表現する構造体の定義
+struct myapp_book {
+  int32_t id;
+  const char* name;
+  int32_t price;
+};
+
+int main(void) {
+  // 構造体変数の宣言と初期化(メンバ変数名を指定して値を指定)
+  struct myapp_book book = {id : 1, name : "C99 Book", price : 2000};
+  
+  printf("id: %d, name: %s, price: %d\n", book.id, book.name, book.price);
+}
+</pre>
+
+<h3>構造体の動的メモリ確保</h3>
+
+構造体をヒープ領域に動的メモリ確保してみましょう。動的にメモリを割り当てる場合は、構造体のポインタ型を使います。この例では「struct myapp_book*」です。
+
+mallocとcallocを使うサンプルです。callocが0初期化してくれるのでお勧めですが、mallocも標準的な方法なので覚えておきましょう。
+
+malloc,callocは「stdlib.h」を読み込むと使える用になります。
+
+mallocの引数は、構造体のサイズを指定します。構造体のサイズはsizeof演算子でサイズを取得できます。
+
+mallocの第一引数は、構造体のサイズを指定します。構造体のサイズはsizeof演算子でサイズを取得できます。第二引数は要素の個数ですが、ここでは、一つだけなので「1」です。
+
+メンバ変数には構造体のポインタ型からアクセスする場合は「.」の代わりに「->」を使います。
+
+確保して使用した後は、freeで解放します。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+// 書籍情報を表現する構造体の定義
+struct myapp_book {
+  int32_t id;
+  const char* name;
+  int32_t price;
+};
+
+int main(void) {
+  // 構造体の動的メモリ確保(malloc)
+  struct myapp_book* book0 = malloc(sizeof(struct myapp_book));
+  book0->id = 1;
+  book0->name = "C99 Book";
+  book0->price = 2000;
+  
+  // 構造体の動的メモリ確保(calloc。0初期化してくれるので安全)
+  struct myapp_book* book1 = calloc(sizeof(struct myapp_book), 1);
+  book1->id = 2;
+  book1->name = "C Function Book";
+  book1->price = 3000;
+  
+  printf("[book0]id: %d, name: %s, price: %d\n", book0->id, book0->name, book0->price);
+  printf("[book1]id: %d, name: %s, price: %d\n", book1->id, book1->name, book1->price);
+  
+  // メモリ解放
+  free(book0);
+  free(book1);
+}
+</pre>
+
+出力結果。
+
+<pre>
+[book0]id: 1, name: C99 Book, price: 2000
+[book1]id: 2, name: C Function Book, price: 3000
+</pre>
+
+<h3>構造体の配列</h3>
+
+構造体の配列を作ってみましょう。配列については<a href="/blog/20210129143859.html">C言語の配列</a>の記事を参考にしてください。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+// 書籍情報を表現する構造体の定義
+struct myapp_book {
+  int32_t id;
+  const char* name;
+  int32_t price;
+};
+
+int main(void) {
+  // 構造体の配列の宣言
+  struct myapp_book books[2];
+  
+  // 配列の要素のメンバ変数に値を代入
+  books[0].id = 1;
+  books[0].name = "C99 Book";
+  books[0].price = 2000;
+
+  books[1].id = 2;
+  books[1].name = "C Function Book";
+  books[1].price = 3000;
+  
+  printf("books[0]id: %d, name: %s, price: %d\n", books[0].id, books[0].name, books[0].price);
+  printf("books[1]id: %d, name: %s, price: %d\n", books[1].id, books[1].name, books[1].price);
+}
+</pre>
+
+出力結果。
+
+<pre>
+books[0]id: 1, name: C99 Book, price: 2000
+books[1]id: 2, name: C Function Book, price: 3000
+</pre>
+
+<h3>構造体の配列のメモリを動的確保</h3>
+
+構造体の配列のメモリを動的確保してみましょう。callocで確保する方法を紹介します。callocは、要素を0初期化してくれるので安全でお勧め。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+// 書籍情報を表現する構造体の定義
+struct myapp_book {
+  int32_t id;
+  const char* name;
+  int32_t price;
+};
+
+int main(void) {
+  // 構造体の配列を動的メモリ確保(calloc。0初期化してくれるので安全)
+  struct myapp_book* books = calloc(sizeof(struct myapp_book), 2);
+  books[0].id = 1;
+  books[0].name = "C99 Book";
+  books[0].price = 2000;
+  
+  books[1].id = 2;
+  books[1].name = "C Function Book";
+  books[1].price = 3000;
+  
+  printf("books[0] id: %d, name: %s, price: %d\n", books[0].id, books[0].name, books[0].price);
+  printf("books[1] id: %d, name: %s, price: %d\n", books[1].id, books[1].name, books[1].price);
+  
+  // メモリ解放
+  free(books);
+}
+</pre>
+
+出力結果。
+
+<pre>
+books[0] id: 1, name: C99 Book, price: 2000
+books[1] id: 2, name: C Function Book, price: 3000
+</pre>
+
+mallocの場合は、callocの箇所を以下のように変えてください。この場合は、配列の要素(構造体の各メンバ変数)が0初期化されていないことに注意してください。
+
+<pre>
+  struct myapp_book* books = malloc(sizeof(struct myapp_book) * 2);
+</pre>
+
+<h3>構造体の定義ってどこに書くの?</h3>
+
+構造体の定義はヘッダファイルに書きます。構造体定義をヘッダに分割した場合の分割コンパイルのサンプルコードです。
+
+<h4>myapp_book.h</h4>
+
+<pre>
+#ifndef MYAPP_BOOK_H
+#define MYAPP_BOOK_H
+
+#include <stdint.h>
+
+// 書籍情報を表現する構造体の定義
+struct myapp_book {
+  int32_t id;
+  const char* name;
+  int32_t price;
+};
+
+#endif
+</pre>
+
+<h4>myapp.c</h4>
+
+<pre>
+#include <stdio.h>
+#include "myapp_book.h"
+
+int main(void) {
+  // 構造体変数の宣言
+  struct myapp_book book;
+  
+  // メンバ変数に値を代入
+  book.id = 1;
+  book.name = "C99 Book";
+  book.price = 2000;
+  
+  printf("id: %d, name: %s, price: %d\n", book.id, book.name, book.price);
+}
+</pre>
+
+<h4>コンパイルして実行</h4>
+
+<pre>
+gcc -o myapp myapp.c && ./myapp
+</pre>
+
+<h3>「struct ○○」っていつでも書かないといけないの?</h3>
+
+typedef文を使うと「struct 〇〇」という型名に別名をつけることもできます。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+// 「struct myapp_book」に「MYAPP_BOOK」という別名をつける
+typedef struct myapp_book MYAPP_BOOK;
+
+// 書籍情報を表現する構造体の定義
+struct myapp_book {
+  int32_t id;
+  const char* name;
+  int32_t price;
+};
+
+int main(void) {
+  // 構造体変数の宣言と初期化(メンバ変数名を指定して値を指定)
+  MYAPP_BOOK book = {id : 1, name : "C99 Book", price : 2000};
+  
+  printf("id: %d, name: %s, price: %d\n", book.id, book.name, book.price);
+}
+</pre>
+
+以下のコンテンツを参考にしてください。
+
+<ul>
+  <li><a href="/blog/20210204153019.html">typedef文 - 型の別名を作成する</a></li>
+  <li><a href="/blog/20210202153503.html">型宣言ヘッダ - ヘッダファイル間の読み込みを減らす</a></li>
+</ul>
+
+<h3>構造体のメモリ領域は?</h3>
+
+構造体変数として宣言された場合は、構造体はコールスタック上にメモリ確保されます。
+
+一方で、mallocやcallocを使って、動的にメモリ確保した場合は、ヒープ領域に確保されます。
