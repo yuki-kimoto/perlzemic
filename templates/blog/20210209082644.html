@@ -1,28 +1,26 @@
-<h2>malloc関数 - メモリの動的確保</h2>
+<h2>calloc関数 - メモリの動的確保と0初期化</h2>
 
-malloc関数を使用するとメモリを動的に確保できます。「stdlib.h」を読み込む必要があります。
+calloc関数を使用するとメモリを動的に確保できます。メモリ領域は0初期化されます。「stdlib.h」を読み込む必要があります。
 
 <pre>
 #include <stdlib.h>
 
-void *malloc(size_t size);
+void *calloc(size_t n, size_t size);
 </pre>
 
-malloc関数はヒープ領域にメモリを確保します。
+calloc関数はヒープ領域にメモリを確保します。
 
-第一引数は、割り当てるサイズをバイト単位で指定します。型はsize_t型です。size_t型は、環境によって、幅が異なりますが、16bit以上の符号なし整数とC言語仕様で定義されています。現代的な環境であれば、0～<a href="/blog/20201129082751.html">符号あり32bit整数型の最大値</a>の範囲(0～2147483647)で、値を指定すれば安心だと想定します。(例外的な環境があれば、プリーズテルミー)。
+第一引数は、一単位のデータのサイズをバイト単位で指定します。第二引数は、データの個数を指定します。これらの型はsize_t型です。size_t型は、環境によって、幅が異なりますが、16bit以上の符号なし整数とC言語仕様で定義されています。現代的な環境であれば、0～<a href="/blog/20201129082751.html">符号あり32bit整数型の最大値</a>の範囲(0～2147483647)で、値を指定すれば安心だと想定します。(例外的な環境があれば、プリーズテルミー)。
 
 戻り値は、確保されたメモリ領域の先頭のアドレスです。戻り値の型は、汎用ポインタ型「void*」です。どんなポインタ型にも代入できます。
 
-malloc関数で割り当てられたメモリは、初期化されていないことに注意しましょう。
+一般的なアプリケーションやライブラリで動的メモリ確保する場合は、<a href="/blog/20210210082644.html">malloc関数</a>よりも0初期化されるcalloc関数をお勧めしています。
 
-一般的なアプリケーションやライブラリで動的メモリ確保する場合は、0初期化される<a href="/blog/20210209082644.html">calloc関数</a>をお勧めしています。
+callocで確保したメモリ領域は、使い終わったら、free関数を使って解放しましょう。解放し忘れるとメモリリークになります。
 
-mallocで確保したメモリ領域は、使い終わったら、free関数を使って解放しましょう。解放し忘れるとメモリリークになります。
+<h3>calloc関数のサンプル</h3>
 
-<h3>malloc関数のサンプル</h3>
-
-malloc関数のサンプルを書いてみます。
+calloc関数のサンプルを書いてみます。
 
 <h4>配列の動的な生成</h4>
 
@@ -36,7 +34,7 @@ malloc関数のサンプルを書いてみます。
 int main(void) {
   // int32_tのサイズで、10の長さのメモリ領域を確保(4バイト*10=40バイト)
   int32_t nums_length = 10;
-  int32_t* nums = malloc(sizeof(int32_t) * nums_length);
+  int32_t* nums = calloc(sizeof(int32_t), nums_length);
   
   // 配列の操作
   nums[0] = 10;
@@ -64,8 +62,8 @@ struct myapp_book {
 };
 
 int main(void) {
-  // 構造体の動的メモリ確保(malloc)
-  struct myapp_book* book = malloc(sizeof(struct myapp_book));
+  // 構造体の動的メモリ確保(calloc)
+  struct myapp_book* book = calloc(sizeof(struct myapp_book), 1);
   book->id = 1;
   book->name = "C99 Book";
   book->price = 2000;
@@ -94,9 +92,9 @@ struct myapp_book {
 };
 
 int main(void) {
-  // 構造体の配列を動的メモリ確保
+  // 構造体の配列を動的メモリ確保(calloc。0初期化してくれるので安全)
   int32_t books_length = 10;
-  struct myapp_book* books = malloc(sizeof(struct myapp_book) * books_length);
+  struct myapp_book* books = calloc(sizeof(struct myapp_book), books_length);
   books[0].id = 1;
   books[0].name = "C99 Book";
   books[0].price = 2000;
