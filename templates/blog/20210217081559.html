@@ -1,0 +1,48 @@
+<h2>型キャスト</h2>
+
+型キャストとは、ある型を他の型に変換する構文のことです。
+
+<pre>
+(変換後の型名)値
+</pre>
+
+int8_t型の値をint32_t型の値に変換する場合は以下のようになります。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+int main(void) {
+  int8_t num_i8 = 5;
+  int32_t num_i32 = (int32_t)num_i8;
+  
+  printf("%d\n", num_i32);
+}
+</pre>
+
+型キャストするサンプルコードです。
+
+型変換の結果、精度が落ちてしまったり、型に互換性がないため、予期せぬ値になる場合もあるので、注意しましょう。
+
+コンパイラによっては、型に互換性がないなど、間違いの可能性が高いものに警告を出すものもあります。
+
+たとえば<a href="https://linux.perlzemi.com/blog/20201216103956.html">gcc</a>で「<a href="/blog/20201130082751.html">int32_t型</a>」を<a href="/blog/20210215090234.html">汎用ポインタ型「void*」</a>に型キャストした場合は、コンパイルは通りますが、警告が発生します。
+
+<pre>
+#include <stdint.h>
+
+int main(void) {
+  int32_t num = 5;
+  void* ptr = (void*)num;
+}
+</pre>
+
+警告内容。
+
+<pre>
+a.c:5: warning: cast to pointer from integer of different size
+</pre>
+
+<h3>暗黙の型変換と型変換規則</h3>
+
+型変換の結果がどうなるかとういことは、暗黙の型変換と型変換規則で解説します。
