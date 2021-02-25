@@ -1,0 +1,23 @@
+<h2>intptr_t - ポインタ型のサイズの符号あり整数型</h2>
+
+intptr_tは、ポインタ型のサイズを持つ符号あり整数型です。たとえば、ポインタ型が32bitで表現される処理系であれば、32bit符号あり整数型、ポインタ型が64bitで表現される処理系であれば、64bit符号あり整数型として定義されます。intptr_tは、<a href="/blog/20201206125815.html">C99</a>で導入されました。
+
+<h3>汎用ポインタ型との相互の型変換</h3>
+
+intptr_t型は、<a href="/blog/20210215090234.html">汎用ポインタ型「void*」</a>と相互変換が保証されます。相互の変換でビット表現は、変わりません。
+
+intptr_tとvoid*を相互変換するサンプルプログラムです。
+
+<pre>
+#include <stdint.h>
+
+int main(void) {
+  void* ptr;
+  
+  intptr_t iptr = (intptr_t)ptr;
+  
+  void* ptr_again = (void*)iptr;
+}
+</pre>
+
+同じ用途として、ポインタ型のサイズの符号なし整数型「<a href="/blog/20210223131724.html">uintptr_t</a>」があります。
