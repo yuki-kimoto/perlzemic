@@ -1,0 +1,21 @@
+<h2>SIZE_MAX - size_t型の最大値</h2>
+
+SIZE_MAXは<a href="/blog/20210301091654.html">size_t型</a>の最大値を表現する定数マクロです。「stdint.h」を<a href="/blog/20210203153019.html">インクルード</a>すると利用できます。
+
+64bitの<a href="https://linux.perlzemi.com/">Linux</a>の環境で、SIZE_MAXを出力してみたサンプルです。%zuは、size_t型の値をポータブルに出力できる書式指定子です。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+  
+  printf("%zu\n", SIZE_MAX);
+}
+</pre>
+
+出力結果です。
+
+<pre>
+18446744073709551615
+</pre>
