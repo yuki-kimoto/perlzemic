@@ -1,0 +1,88 @@
+<h2>アサーション - assertマクロ</h2>
+
+assertマクロを使うとアサーションをソースコードに挿入できます。
+
+<pre>
+assert(条件)
+</pre>
+
+assertマクロの条件が真であるときは、何も起こりません。条件が偽である場合は、エラーメッセージを出力し、プログラムが終了します。コアダンプ出力を有効にしている場合は、コアダンプも出力されます。ある値が、期待している値であることをチェックしたい場合に便利です。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+#include <assert.h>
+
+int main(void) {
+  int32_t num = 3;
+  
+  // numが1より大きいことをチェック
+  assert(num > 1);
+  
+  printf("%d\n", num);
+}
+</pre>
+
+出力結果です。「num」が「1」より大きいので普通に実行されます。
+
+<pre>
+3
+</pre>
+
+「num」を「-1」にしてみましょう。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+#include <assert.h>
+
+int main(void) {
+  int32_t num = -1;
+  
+  // numが1より大きいことをチェック
+  assert(num > 1);
+  
+  printf("%d\n", num);
+}
+</pre>
+
+<a href="https://linux.perlzemi.com/blog/20201216103956.html">gcc</a>の場合の出力結果です。
+
+<pre>
+a: a.c:9: main: Assertion `num > 1' failed.
+Aborted (core dumped)
+</pre>
+
+<a href="https://linux.perlzemi.com/blog/20191126082723.html">lsコマンド</a>と<a href="https://linux.perlzemi.com/blog/20200602093211.html">grepコマンド</a>で確認すると、コアダンプも出力されています。
+
+<pre>
+$ ls | grep core
+core.28560
+</pre>
+
+コアダンプは、プログラムのデバッグに関する情報が格納されているファイルだと考えてください。コアダンプを使ってプログラムをデバッグする方法については、別の箇所で解説します。
+
+<h3>assertマクロを取り除く</h3>
+
+assertマクロは、NDEBUGマクロを、コンパイル時に指定することで、取り除くことができます。デバッグするときにだけassertマクロを使い、最終的な製品の出力にはassertマクロを入れたくないという場合に便利です。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+#include <assert.h>
+
+int main(void) {
+  int32_t num = -1;
+  
+  // numが1より大きいことをチェック
+  assert(num > 1);
+  
+  printf("%d\n", num);
+}
+</pre>
+
+次のようにgccの「-D」オプションで「NDEBUGマクロ」を定義して、実行してみましょう。assertマクロの部分が実行されません。
+
+<pre>
+gcc -DNDEBUG -o a a.c && ./a
+</pre>
