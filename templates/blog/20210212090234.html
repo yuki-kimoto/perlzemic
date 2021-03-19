@@ -68,7 +68,7 @@ int32_t MYAPP_LIB_get_flag(MYAPP_LIB* self) {
 デストラクタは関数です。これは、手動で呼ぶ必要があります。
 
 <pre>
-void MYAPP_LIB_DESTROY(MYAPP_LIB* self) {
+void MYAPP_LIB_free(MYAPP_LIB* self) {
   
   // メモリ割り当て解放
   free(self);
@@ -120,7 +120,7 @@ int32_t MYAPP_LIB_get_flag(MYAPP_LIB* self) {
   return self->flag;
 }
 
-void MYAPP_LIB_DESTROY(MYAPP_LIB* self) {
+void MYAPP_LIB_free(MYAPP_LIB* self) {
   
   // メモリ割り当て解放
   free(self);
@@ -136,7 +136,7 @@ int main(void) {
   printf("%d\n", myapp_lib_flag);
   
   // オブジェクトの解放
-  MYAPP_LIB_DESTROY(myapp_lib);
+  MYAPP_LIB_free(myapp_lib);
 }
 </pre>
 
@@ -172,7 +172,7 @@ MYAPP_LIB* MYAPP_LIB_new();
 MYAPP_LIB* MYAPP_LIB_new_with_flag(int32_t flag);
 void MYAPP_LIB_set_flag(MYAPP_LIB* self, int32_t flag);
 int32_t MYAPP_LIB_get_flag(MYAPP_LIB* self);
-void MYAPP_LIB_DESTROY(MYAPP_LIB* self);
+void MYAPP_LIB_free(MYAPP_LIB* self);
 
 #endif
 </pre>
@@ -212,7 +212,7 @@ int32_t MYAPP_LIB_get_flag(MYAPP_LIB* self) {
   return self->flag;
 }
 
-void MYAPP_LIB_DESTROY(MYAPP_LIB* self) {
+void MYAPP_LIB_free(MYAPP_LIB* self) {
   
   // メモリ割り当て解放
   free(self);
@@ -237,7 +237,7 @@ int main(void) {
   printf("%d\n", myapp_lib_flag);
   
   // オブジェクトの解放
-  MYAPP_LIB_DESTROY(myapp_lib);
+  MYAPP_LIB_free(myapp_lib);
 }
 </pre>
 
