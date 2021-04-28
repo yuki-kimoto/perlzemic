@@ -1,4 +1,4 @@
-<h2>printf関数 - 文字列をフォーマットして出力する(書き始め)</h2>
+<h2>printf関数 - 文字列をフォーマットして出力する</h2>
 
 printf関数を使うと、文字列をフォーマットして出力できます。<a href="/blog/20210418083246.html">stdio.hヘッダ</a>をインクルードすると利用できます。
 
@@ -230,6 +230,22 @@ int main(void) {
 foo,00123,bar
 </pre>
 
+<h3>整数型を16進数で表示</h3>
+
+整数型を16進数で表示するには「%x」または「%X」を使用します。「%x」の場合は「a～z」で、「%X」の場合は「A～Z」を使って出力されます。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+  int32_t num = 0x34AB;
+  
+  printf("%x\n", num);
+  printf("%X\n", num);
+}
+</pre>
+
 <h3>浮動小数点型のフォーマット</h3>
 
 printf関数の浮動小数点型のフォーマットの解説です。
@@ -308,4 +324,58 @@ int main(void) {
 <pre>
 123.56
 2.56e+40
+</pre>
+
+<h3>文字列のフォーマット</h3>
+
+printf関数で<a href="/blog/20210331101342.html">文字列</a>をフォーマットするには「%s」を使います。
+
+<pre>
+%s
+</pre>
+
+printf関数で文字列をフォーマットするサンプルです。
+
+<pre>
+#include <stdio.h>
+
+int main(void) {
+  const char* message = "Hello";
+  
+  // 文字列を出力
+  printf("%s\n", message);
+}
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+</pre>
+
+<h3>ポインタのフォーマット</h3>
+
+printf関数で<a href="/blog/20210211090234.html">ポインタ</a>をフォーマットするには「%p」を使います。ポインタの値(アドレス)が得られます。
+
+<pre>
+%p
+</pre>
+
+printf関数でポインタをフォーマットするサンプルです。
+
+<pre>
+#include <stdio.h>
+
+int main(void) {
+  const char* message = "Hello";
+  
+  // ポインタを出力
+  printf("%p\n", message);
+}
+</pre>
+
+私の環境での出力結果です。ポインタの値(アドレス)が出力されています。
+
+<pre>
+0x4005c8
 </pre>
