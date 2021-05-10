@@ -10,7 +10,6 @@ int fprintf(FILE *fp, const char *format, ...);
 <h3>標準出力に出力する</h3>
 
 fprintf関数を使って、標準出力に出力してみましょう。printf関数と同じことをします。stdoutは、標準出力を意味する<a href="/blog/20210315140759.html">グローバル変数</a>です。
-
 <pre>
 #include <stdio.h>
 
@@ -47,7 +46,7 @@ Hello
 
 <h3>ファイルに出力する</h3>
 
-fprintf関数を使って、ファイルに出力してみましょう。open関数でファイルを開いて、ファイルに書き込んでみましょう。開いたファイルはclose関数で閉じています。
+fprintf関数を使って、ファイルに出力してみましょう。fopen関数でファイルを開いて、ファイルに書き込んでみましょう。開いたファイルはfclose関数で閉じています。
 
 <pre>
 #include <stdio.h>
@@ -66,7 +65,7 @@ int main(void) {
   fprintf(out_fp, "%s\n", message);
   
   // ファイルを閉じる
-  close(out_fp);
+  fclose(out_fp);
 }
 </pre>
 
