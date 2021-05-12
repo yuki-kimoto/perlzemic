@@ -1,0 +1,36 @@
+<h2>fclose関数 - ファイルを閉じる</h2>
+
+fclose関数はファイルを閉じます。<a href="/blog/20210418083246.html">stdio.h</a>ヘッダを読み込むと使えます。
+
+<pre>
+int fclose(FILE* fp);
+</pre>
+
+引数は閉じたいファイルのファイルストリームです。ファイルクローズが、成功した場合は0、エラーの場合はEOFを返します。ファイルをクローズすると、バッファは、フラッシュされます。
+
+<h3>fclose関数のサンプル</h3>
+
+fclose関数のサンプルです。fopen関数でファイルを開き、fclose関数で、ファイルを閉じています。
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+  
+  // ファイルを開く
+  const char* out_file = "output.txt";
+  FILE* out_fp = fopen(out_file, "w");
+  if (out_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", out_file);
+    exit(1);
+  }
+  
+  // ファイルに書き込む
+  const char* message = "Hello";
+  fprintf(out_fp, "%s\n", message);
+  
+  // fclose関数でファイルを閉じる
+  fclose(out_fp);
+}
+</pre>
