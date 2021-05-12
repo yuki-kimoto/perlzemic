@@ -1,0 +1,28 @@
+<h2>stdout - 標準出力ストリームを意味するFILE構造体へのポインタ</h2>
+
+stdoutは、標準出力ストリームを意味するFILE構造体へのポインタです。標準出力ストリームは、プログラム開始時に自動的にオープンされます。標準出力ストリームは、一般的には、画面への出力を意味していています。
+
+<pre>
+stdout
+</pre>
+
+stdoutは、C言語仕様上は、式として実装されます。stdoutは、<a href="/blog/20210315140759.html">グローバル変数</a>あるいは、<a href="/blog/20210302083009.html">マクロ</a>として実装可能です。
+
+<h3>stdoutを使ったサンプル</h3>
+
+stdoutを使ったサンプルです。<a href="/blog/20210510093506.html">fprintf関数</a>で、出力先に、標準出力を指定しています。
+
+<pre>
+#include <stdio.h>
+
+int main(void) {
+  const char* message = "Hello";
+  fprintf(stdout, "%s\n", message);
+}
+</pre>
+
+実行結果です。画面に「Hello」と表示されます。
+
+<pre>
+Hello
+</pre>
