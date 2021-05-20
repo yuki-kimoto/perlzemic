@@ -1,0 +1,75 @@
+<h2>fread関数 - バイト数を指定してファイルから読み込み(書きかけ)</h2>
+
+<b>fread関数</b>を使うと、バイト数を指定してファイルから読み込むことができます。
+
+<pre>
+#include <stdio.h>
+size_t fread(void *buffer, size_t size, size_t n, FILE *fp);
+</pre>
+
+第一引数は、ファイルから読み込まれた内容が格納されるバッファです。読み込んだ内容を格納できるメモリサイズを確保しましょう。第二引数は、読み込むデータのバイトの単位です。第三引数は、読み込むデータの個数です。実際に読み込まれるバイトサイズは「size * n」になります。第四引数は、読み込みたいファイルのファイルストリームです。
+
+戻り値は、読み込んだデータの個数です。第三引数で指定したデータの個数に対応しています。バイトサイズではないので注意してください。読み込みが、ファイルの末尾に到達したときは、戻り値が、第三引数で指定したデータの個数より小さくなります。
+
+<h3>fread関数で読み込むサンプル</h3>
+
+fread関数で読み込むサンプルです。fopen関数でファイルを開き、16バイトずつ読み込み、putchar関数で標準出力に出力し、fclose関数でファイルを閉じています。
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+int main(void) {
+  
+  // ファイルを読み込みモードで開く
+  const char* in_file = "input.txt";
+  FILE* in_fp = fopen(in_file, "r");
+  if (in_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", in_file);
+    exit(1);
+  }
+  
+  // 読み込んで、標準出力に出力
+  while(1) {
+    
+    char buffer[16];
+    int32_t read_unit = 1;
+    int32_t read_count = 16;
+    size_t real_read_count = fread(buffer, read_unit, read_count, in_fp);
+    
+    // 読み込んだ文字を出力
+    for (int32_t i = 0; i < real_read_count; i++) {
+      putchar(buffer[i]);
+    }
+    
+    // わかりやすいように改行
+    printf("\n");
+    
+    if (real_read_count < read_count) {
+      break;
+    }
+  }
+  
+  // fclose関数でファイルを閉じる
+  fclose(in_fp);
+}
+</pre>
+
+入力ファイル「input.txt」です。
+
+<pre>
+aaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbccccccccccccccccccccccccccddddddddddddddddddddd
+</pre>
+
+出力結果です。
+
+<pre>
+aaaaaaaaaaaaaaaa
+aaaaaabbbbbbbbbb
+bbbbbbbbbbbbbbcc
+cccccccccccccccc
+ccccccccdddddddd
+ddddddddddddd
+</pre>
+
+(続く)
