@@ -1,0 +1,35 @@
+<h2>putchar関数 - 1文字出力する</h2>
+
+putchar関数で、1文字出力できます。<a href="/blog/20210418083246.html">stdio.h</a>ヘッダを読み込むと使えます。
+
+<pre>
+#include <stdio.h>
+int putchar(int c);
+</pre>
+
+<h3>putchar関数のサンプル</h3>
+
+putchar関数で1文字づつ出力するサンプルです。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+int main(void) {
+  const char* message = "Hello";
+
+  int32_t message_length = strlen(message);
+
+  for (int32_t i = 0; i < message_length; i++) {
+    putchar(message[i]);
+  }
+  putchar('\n');
+}
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+</pre>
