@@ -1,9 +1,8 @@
 <h2>ファイル入出力(書き始め)</h2>
 
-C言語のファイル入出力の入門的な解説です。ファイル入出力の方法には、一文字づつを読み書きする方法や、数バイトづつ読み書きする方法、行を読み書きする方法、ファイル全体を読み書きする方法などがありますが。
+C言語のファイル入出力の入門的な解説です。ファイル入出力の方法には、一文字づつを読み書きする方法や、数バイトづつ読み書きする方法、ファイル全体を読み書きする方法を紹介します。
 
-ここでは、ファイル全体を読み込んで、ファイル全体を書き出す方法について解説します。メモリ容量も大きな現在(書いた年は2021年)、この方法を覚えておけば、なんとかなることが多いと思われます。
-行の読み書きを簡単にやりたい場合は、テキスト処理が得意なプログラミング言語を使うのもひとつの手ですね。ファイル入出力の発展として、ソケット入出力を行う場合は、数バイトづつ読み書きする方法を知る必要があります。
+C言語は、行の読み書きが難しいので、簡単にやりたい場合は、テキスト処理が得意なプログラミング言語を使うのもひとつの手ですね。
 
 <h3>ファイルをオープンする</h3>
 
@@ -68,6 +67,103 @@ int fgetc(FILE *fp);
 </pre>
 
 ファイルストリームから1文字読み込み、読み込んだ文字を返します。ファイルの最後に到達した場合は、EOFが返ります。
+
+<h3>ファイルから一文字づつ読み込む</3>
+
+ファイルから1文字づつ読み込むサンプルです。fgetc関数のサンプルです。<a href="/blog/20210513075631.html">fopen関数</a>で読み込みモードでファイルを開き、<a href="/blog/20210519082217.html">fgetc関数</a>で1文字づつ読み込み、標準出力に出力し、<a href="/blog/20210509093506.html">fclose関数</a>でファイルを閉じています。
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+int main(void) {
+  
+  // ファイルを読み込みモードで開く
+  const char* in_file = "input.txt";
+  FILE* in_fp = fopen(in_file, "r");
+  if (in_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", in_file);
+    exit(1);
+  }
+  
+  // 読み込んで、標準出力に出力
+  int32_t ch;
+  while(ch = fgetc(in_fp)) {
+    // EOFが返ってきた場合
+    if (ch == EOF) {
+      // ファイルの末尾かチェックする
+      if (feof(in_fp)) {
+        break;
+      }
+    }
+    fputc(ch, stdout);
+  }
+  
+  // fclose関数でファイルを閉じる
+  fclose(in_fp);
+}
+</pre>
+
+入力ファイル「input.txt」です。
+
+<pre>
+Hello
+World!
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+World!
+</pre>
+
+<h3>ファイルに書き出す</h3>
+
+上記のサンプルの出力先を「output.txt」にしてみましょう。
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+int main(void) {
+  
+  // ファイルを読み込みモードで開く
+  const char* in_file = "input.txt";
+  FILE* in_fp = fopen(in_file, "r");
+  if (in_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", in_file);
+    exit(1);
+  }
+
+  // ファイルを書き込みモードで開く
+  const char* out_file = "output.txt";
+  FILE* out_fp = fopen(out_file, "w");
+  if (out_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", out_file);
+    exit(1);
+  }
+  
+  // 読み込んで、ファイルにに出力
+  int32_t ch;
+  while(ch = fgetc(in_fp)) {
+    // EOFが返ってきた場合
+    if (ch == EOF) {
+      // ファイルの末尾かチェックする
+      if (feof(in_fp)) {
+        break;
+      }
+    }
+    fputc(ch, out_fp);
+  }
+  
+  // fclose関数でファイルを閉じる
+  fclose(in_fp);
+  fclose(out_fp);
+}
+</pre>
 
 <h3>ファイル全体を読み込む</h3>
 
