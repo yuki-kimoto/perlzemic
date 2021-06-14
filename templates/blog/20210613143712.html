@@ -1,0 +1,101 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library.html">
+        <span itemprop="name">C標準ライブラリ</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library/stdio.html">
+        <span itemprop="name">stdio.h</span>
+      </a>
+      <meta itemprop="position" content="3" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>fwrite関数 - バイト数を指定してファイルから書き込み</h2>
+
+<b>fwrite関数</b>を使うと、バイト数を指定してファイルから書き込むことができます。<a href="/blog/20210418083246.html">stdio.h</a>ヘッダを書き込むと使えます。
+
+<pre>
+#include <stdio.h>
+size_t fwrite(const void *buf, size_t size, size_t n, FILE *fp);
+</pre>
+
+第一引数は、書き込みたい内容が含まれたバッファです。第二引数は、書き込むデータのバイトの単位です。第三引数は、書き込むデータの個数です。実際に書き込まれるバイトサイズは「size * n」になります。第四引数は、書き込みたいファイルのファイルストリームです。
+
+戻り値は、書き込んだデータの個数です。第三引数で指定したデータの個数に対応しています。バイトサイズではないので注意してください。書き込みエラーが発生した場合、戻り値は、第三引数で指定したデータの個数より小さくなります。
+
+<h3>fwrite関数で書き込むサンプル</h3>
+
+fwrite関数で書き込むサンプルです。<a href="/blog/20210513075631.html">fopen関数</a>でファイルを開き、<a href="/blog/20210520080906.html">fread関数</a>で、4バイトずつ読み込み、fwrite関数で4バイトづつファイルに書き込み、<a href="/blog/20210509093506.html">fclose関数</a>でファイルを閉じています。
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+int main(void) {
+  
+  // ファイルを読み込みモードで開く
+  const char* in_file = "input.txt";
+  FILE* in_fp = fopen(in_file, "r");
+  if (in_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", in_file);
+    exit(1);
+  }
+
+  // ファイルを書き込みモードで開く
+  const char* out_file = "output.txt";
+  FILE* out_fp = fopen(out_file, "w");
+  if (out_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", out_file);
+    exit(1);
+  }
+
+  // 読み込んで、他のファイルに出力
+  while(1) {
+    
+    // 4バイトづつ読み込み
+    char buffer[16];
+    int32_t read_unit = 1;
+    int32_t read_count = 4;
+    size_t real_read_count = fread(buffer, read_unit, read_count, in_fp);
+    
+    // 4バイトづつ書き込み
+    fwrite(buffer, read_unit, real_read_count, out_fp);
+    
+    if (real_read_count < read_count) {
+      break;
+    }
+  }
+  
+  // fclose関数でファイルを閉じる
+  fclose(in_fp);
+}
+</pre>
+
+入力ファイル「input.txt」です。
+
+<pre>
+Hello
+World!
+</pre>
+
+出力ファイル「input.txt」です。
+
+<pre>
+Hello
+World!
+</pre>
