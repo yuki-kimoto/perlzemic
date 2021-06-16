@@ -167,9 +167,125 @@ int main(void) {
 
 <h3>数バイト単位で読み書きする</h3>
 
-数バイト単位で読み書きするサンプルです。
+数バイト単位で読み書きするサンプルです。<a href="/blog/20210520080906.html">fread関数</a>で、入力ファイルから数バイトづつ読み込み、<a href="/blog/20210613143712.html">fwrite関数</a>で、出力ファイルへ数バイトづつ書き込みます。
 
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 
+int main(void) {
+  
+  // ファイルを読み込みモードで開く
+  const char* in_file = "input.txt";
+  FILE* in_fp = fopen(in_file, "r");
+  if (in_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", in_file);
+    exit(1);
+  }
+
+  // ファイルを書き込みモードで開く
+  const char* out_file = "output.txt";
+  FILE* out_fp = fopen(out_file, "w");
+  if (out_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", out_file);
+    exit(1);
+  }
+
+  // 読み込んで、他のファイルに出力
+  while(1) {
+    
+    // 4バイトづつ読み込み
+    char buffer[16];
+    int32_t read_unit = 1;
+    int32_t read_count = 4;
+    size_t real_read_count = fread(buffer, read_unit, read_count, in_fp);
+    
+    // 4バイトづつ書き込み
+    fwrite(buffer, read_unit, real_read_count, out_fp);
+    
+    if (real_read_count < read_count) {
+      break;
+    }
+  }
+  
+  // fclose関数でファイルを閉じる
+  fclose(in_fp);
+}
+</pre>
+
+入力ファイル「input.txt」です。
+
+<pre>
+Hello
+World!
+</pre>
+
+出力ファイル「output.txt」です。
+
+<pre>
+Hello
+World!
+</pre>
+
+<h3>ファイル全体を読み書き</h3>
+
+fread関数でファイル全体を読み込むサンプルです。<a href="/blog/20210526085256.html">ftell関数</a>と<a href="/blog/20210525075439.html">fseek関数</a>を使って、ファイルのサイズを取得して、<a href="/blog/20210209082644.html">calloc関数</a>でメモリを確保し、ファイル全体を読み込んでいます。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+int main(void) {
+  // ファイルを開く
+  const char* in_file = "input.txt";
+  FILE* in_fp = fopen(in_file, "r");
+  if (in_fp == NULL) {
+    fprintf(stderr, "Can't open file %s at %s line %d\n", in_file, __FILE__, __LINE__);
+    exit(1);
+  }
+  
+  // ファイルの末尾に位置指定子を移動
+  fseek(in_fp, 0, SEEK_END);
+  
+  // ファイルの末尾の位置を取得。これは、ファイサイズになります。
+  size_t file_size = (int32_t)ftell(in_fp);
+  
+  // ファイルサイズを取得
+  char* buffer = calloc(file_size + 1, sizeof(char));
+
+  // ファイルの先頭に位置指定子を移動
+  fseek(in_fp, 0, SEEK_SET);
+  
+  // ファイルを読み込み
+  size_t read_count = fread(buffer, sizeof(char), file_size, in_fp);
+  if (read_count != file_size) {
+    fprintf(stderr, "Can't read file %s at %s line %d\n", in_file, __FILE__, __LINE__);
+    exit(1);
+  }
+  
+  // ファイルの内容を確認
+  printf("%s\n", buffer);
+  
+  // ファイルを閉じる
+  fclose(in_fp);
+}
+</pre>
+
+入力ファイルです。
+
+<pre>
+Hello
+World!
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+World!
+</pre>
 
 <h3>ファイル全体を読み込む</h3>
 
