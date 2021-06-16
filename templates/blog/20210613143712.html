@@ -149,7 +149,7 @@ int main(void) {
     exit(1);
   }
   
-  // ファイルの内容を確認
+  // 出力ファイルへ書き込み
   fwrite(buffer, sizeof(char), file_size, out_fp);
   
   // ファイルを閉じる
@@ -157,14 +157,15 @@ int main(void) {
 }
 </pre>
 
-入力ファイルです。
+
+入力ファイル「input.txt」です。
 
 <pre>
 Hello
 World!
 </pre>
 
-出力結果です。
+出力ファイル「output.txt」です。
 
 <pre>
 Hello
