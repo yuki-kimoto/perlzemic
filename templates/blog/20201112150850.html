@@ -26,7 +26,7 @@
 
 <h2>INT64_MIN - int64_tの最小値を表す定数</h2>
 
-INT64_MINは<a href="/blog/20201127082751.html">int64_t - 符号あり64bit整数型</a>の最小値を表す定数です。「stdint.h」をインクルードすると利用できます。
+INT64_MINは<a href="/blog/20201127082751.html">int64_t - 符号あり64bit整数型</a>の最小値を表す定数です。「<a href="/blog/20210220132505.html">stdint.h</a>」ヘッダをインクルードすることで使えます。<a href="/blog/20201206125815.html">C99</a>で導入された<a href="/blog/20210302083009.html">定数マクロ</a>です。
 
 <pre>
 #include <stdio.h>
@@ -43,4 +43,4 @@ INT64_MINの値です。
 -9223372036854775808
 </pre>
 
-INT64_MINはC99で導入されたマクロです。
+<a href="/blog/20210419083246.html">printf関数</a>のフォーマット指定子で「%lld」を使っています。

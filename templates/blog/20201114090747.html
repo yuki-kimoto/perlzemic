@@ -26,7 +26,7 @@
 
 <h2>INT8_MIN - int8_tの最小値を表す定数</h2>
 
-INT8_MINは<a href="/blog/20201117090747.html">int8_t - 符号あり8bit整数型</a>の最小値を表す定数です。「stdint.h」をインクルードすると利用できます。
+INT8_MINは<a href="/blog/20201117090747.html">int8_t - 符号あり8bit整数型</a>の最小値を表す定数です。「<a href="/blog/20210220132505.html">stdint.h</a>」ヘッダをインクルードすることで使えます。<a href="/blog/20201206125815.html">C99</a>で導入された<a href="/blog/20210302083009.html">定数マクロ</a>です。
 
 <pre>
 #include <stdio.h>
@@ -37,10 +37,10 @@ int main(void) {
 }
 </pre>
 
-INT8_MINの値です。
+<a href="/blog/20210419083246.html">printf関数</a>のフォーマット指定子で「%d」を使っています。
+
+出力はINT8_MINの値です。
 
 <pre>
 -128
 </pre>
-
-INT8_MINはC99で導入されたマクロです。
