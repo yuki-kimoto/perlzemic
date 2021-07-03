@@ -26,7 +26,7 @@
 
 <h2>INT64_MAX - int64_tの最大値を表す定数</h2>
 
-INT64_MAXは<a href="/blog/20201127082751.html">int64_t - 符号あり64bit整数型</a>の最大値を表す定数です。「stdint.h」をインクルードすると利用できます。
+INT64_MAXは<a href="/blog/20201127082751.html">int64_t - 符号あり64bit整数型</a>の最大値を表す定数です。「<a href="/blog/20210220132505.html">stdint.h</a>」ヘッダをインクルードすることで使えます。<a href="/blog/20201206125815.html">C99</a>で導入された<a href="/blog/20210302083009.html">定数マクロ</a>です。
 
 <pre>
 #include <stdio.h>
@@ -37,10 +37,10 @@ int main(void) {
 }
 </pre>
 
-INT64_MAXの値です。
+<a href="/blog/20210419083246.html">printf関数</a>のフォーマット指定子で「%lld」を使っています。Unix/Linux/Mac/Windowsですべて正しく動くように、フォーマット指定子には「%lld」を使用しています。「%ld」はWindowsでは、符号あり32bit整数を意味するからです。符号あり64bit整数を保証するために、「%lld」を使用しています。
+
+出力されたINT64_MAXの値です。
 
 <pre>
 9223372036854775807
 </pre>
-
-INT64_MAXはC99で導入されたマクロです。Unix/Linux/Mac/Windowsですべて正しく動くように、フォーマット指定子には「%lld」を使用しています。「%ld」はWindowsでは、符号あり32bit整数を意味するからです。符号あり64bit整数を保証するために、「%lld」を使用しています。
