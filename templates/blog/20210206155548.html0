@@ -1,0 +1,91 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/syntax.html">
+        <span itemprop="name">基本文法</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>共用体 - データの共用</h2>
+
+共用体は、複数のデータを共用できる型です。共用するという意味は、メンバ変数が、同じメモリ領域を使うという意味です。データを共有するという点を除いては、共用体は、<a href="/blog/20210208155548.html">構造体</a>と同じように使うことができます。
+
+<pre>
+#include <stdint.h>
+
+// 共用体
+union myapp_value {
+  int8_t i8_val;
+  int16_t i16_val;
+  int32_t i32_val;
+  int64_t i64_val;
+  float float_val;
+  double double_val;
+  void* ptr_val;
+};
+</pre>
+
+メンバ変数は、一つのメモリ領域を共有しています。つまり、一度に、どれか一つしか利用できないということです。
+
+<a href="/blog/20210207155548.html">sizeof演算子</a>が返す共用体のサイズは、最も大きいメンバ変数の<a href="/blog/20210207155548.html">sizeof演算子</a>が返すサイズになります。
+
+<h3>共用体の使用</h3>
+
+共用体を使用してみましょう。共用体は、型として利用できます。共用体を宣言して、メンバ変数に値を代入して、内容を出力しています。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+// 書籍情報を表現する共用体の定義
+union myapp_value {
+  int8_t i8_val;
+  int16_t i16_val;
+  int32_t i32_val;
+  int64_t i64_val;
+  float float_val;
+  double double_val;
+  void* ptr_val;
+};
+
+int main(void) {
+  // 共用体変数の宣言
+  union myapp_value value;
+  
+  // メンバ変数i32_valueに値を代入
+  value.i32_val = 4;
+  printf("i32_val: %d\n", value.i32_val);
+  
+  // メンバ変数double_valに値を代入
+  value.double_val = 2.56;
+  printf("double_val: %f\n", value.double_val);
+
+  // あら、i32_valの値は、更新されている
+  printf("i32_val: %d\n", value.i32_val);
+  
+  // 共用体のサイズ
+  printf("size of union mypp_value: %d\n", sizeof(union myapp_value));
+}
+</pre>
+
+<h3>共用体は何のために存在していますか?</h3>
+
+メモリ領域を節約するためです。
+
+「えっ、本当にそれだけ?」
+
+はい。最適化のために、メモリを節約したい場合が実際にあり、その場合に使います。
+
+省メモリであるということは、メモリの局所性が高まるため、パフォーマンスにも良い影響がでます。

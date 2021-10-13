@@ -1,0 +1,87 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/syntax.html">
+        <span itemprop="name">基本文法</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>break文 - ループブロックあるいはswitchブロックから抜ける</h2>
+
+<b>break文</b>を使うと、<a href="/blog/20210115151850.html">for文</a>、<a href="/blog/20210119082326.html">while文</a>のループブロック、または<a href="/blog/20210122133501.html">switch文</a>のブロックから抜けることができます。
+
+<pre>
+for (ループ変数初期化;ループする条件;ループ変数更新) {
+  
+  # ループブロックを抜ける
+  break;
+}
+
+while (ループする条件) {
+  
+  # ループブロックを抜ける
+  break;
+}
+
+switch (値) {
+  case ケース1の値:
+    // switchブロックを抜ける
+    break;
+  case ケース2の値:
+    // switchブロックを抜ける
+    break;
+  case ケース3の値:
+    // switchブロックを抜ける
+    break;
+  default:
+    // 上記以外のケースの場合の処理
+}
+</pre>
+
+<h3>break文のサンプルコード</h3>
+
+for文でbreak文を使うサンプルコードです。配列がある値を含んでいたら、break文を使って抜けるという処理です。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+int main(void) {
+  
+  // 配列
+  int32_t nums[] = {3, 5, 9};
+  int32_t nums_length = 3;
+  
+  int32_t match = 0;
+  for (int32_t i = 0; i < nums_length; i++) {
+    // 5を含んでいる
+    if (nums[i] == 5) {
+      match = 1;
+      break;
+    }
+  }
+  
+  if (match) {
+    printf("Match\n");
+  }
+  else {
+    printf("Not Match\n");
+  }
+}
+</pre>
+
+<h3>ループを脱出する文Perlとの違い</h3>
+
+C言語のbreak文は、Perlの<a href="https://perlzemi.com/blog/20170527149589.html">last文</a>に該当します。

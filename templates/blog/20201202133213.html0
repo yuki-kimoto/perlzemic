@@ -1,0 +1,63 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/types.html">
+        <span itemprop="name">C言語の型</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>float - 単精度(32bit)浮動小数点型</h2>
+
+「float」は単精度(32bit)浮動小数点型です。単精度というのは単に32bitという意味です。浮動小数点とは、小数をソフトウェアで表現する一つの形式で、IEEE 754 形式においては、符号部、仮数部、指数部からなります。仮数部は、有効桁数のことだと考えてください。
+
+<pre>
+# 単精度(32bit)浮動小数点型
+float
+</pre>
+
+単精度(32bit)浮動小数点型が表現できる浮動小数の最大値はFTL_MAX、最小値はFLT_MINで定義されています。
+
+<h3>floatのサンプルコード</h3>
+
+floatを使ったサンプルコードです。浮動小数点リテラルの型が、float型であることを明示するために「f」サフィックスを指定しています。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+  float num = 5.4f;
+  
+  printf("%f\n", num);
+}
+</pre>
+
+<a href="/blog/20210419083246.html">printf関数</a>のフォーマット指定子で「%f」を使っています。
+
+出力結果。
+
+<pre>
+5.400000
+</pre>
+
+<h3>16bit幅の整数はfloatで表現できる</h3>
+
+floatは浮動小数点型ですが、整数は浮動小数点の一つの値なので、整数も表現できます。
+
+数の大小関係で覚えておいてほしいのは、16bit幅の整数(<a href="/blog/20201126090559.html">int16_t</a>, <a href="/blog/20201120084622.html">uint16_t</a>)は、floatで表現できるということです。一方で、32bit幅の整数(<a href="/blog/20201130082751.html">int32_t</a>, <a href="/blog/20201111150850.html">uint32_t</a>)は、floatでは表現できず、doubleが必要です。
+
+<h3>float型とディープラーニングとGPUの関係</h3>
+
+<a href="https://deeplearning.perlzemi.com/">ディープラーニング</a>では、計算処理の高速化のためにGPUによる演算を行います。GPUの処理は、一般的なものではfloat幅の数値の並列計算です。GPUはもともと画面表示用のプロセッサで、密度を高めて並列計算を行うためにひとつひとつのユニットはfloat幅です。これが、ディープラーニングで必要とされる数値計算と、相性が良かったのです。Perlで<a href="https://bind.perlzemi.com/">GPU/CUDAをバインディング</a>することも可能です。

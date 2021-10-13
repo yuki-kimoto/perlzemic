@@ -1,0 +1,56 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library.html">
+        <span itemprop="name">C標準ライブラリ</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library/stdlib.html">
+        <span itemprop="name">stdlib.h</span>
+      </a>
+      <meta itemprop="position" content="3" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>exit関数 - プログラムを終了する</h2>
+
+exit関数を使うと、プログラムが終了します。<a href="/blog/20210227091654.html">stdlib.h</a>ヘッダをインクルードすると使用できます。
+
+<pre>
+void exit(int status);
+</pre>
+
+正常終了を意味させる場合は引数に「0」を、異常終了を意味させる場合は「0以外」を指定します。異常終了の場合は、慣習的に「1」が指定されることが多いようです。
+
+<h3>エラーメッセージを表示してプログラムを終了するサンプル</h3>
+
+<a href="/blog/20210510093506.html">fprintf関数</a>で標準エラー出力に、エラーメッセージを表示してexit関数でプログラムを終了するサンプルです。エラーメッセージには、ファイル名と行番号を含めています。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+  
+  // エラーが発生
+  int32_t error = 1;
+  
+  if (error) {
+    fprintf(stderr, "Error at %s line %d\n", __FILE__, __LINE__);
+    exit(1);
+  }
+}
+</pre>

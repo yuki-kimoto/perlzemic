@@ -1,0 +1,109 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library.html">
+        <span itemprop="name">C標準ライブラリ</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library/stdio.html">
+        <span itemprop="name">stdio.h</span>
+      </a>
+      <meta itemprop="position" content="3" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>fgetc関数 - ファイルから1文字読み込む</h2>
+
+fgetc関数は、ファイルから1文字読み込む関数です。<a href="/blog/20210418083246.html">stdio.h</a>ヘッダを読み込むと使えます。
+
+<pre>
+#include <stdio.h>
+int fgetc(FILE *fp);
+</pre>
+
+ファイルストリームから1文字読み込み、読み込んだ文字を返します。ファイルの最後に到達した場合は、EOFが返ります。
+
+<h3>fgetc関数のサンプル</h3>
+
+fgetc関数のサンプルです。<a href="/blog/20210513075631.html">fopen関数</a>で読み込みモードでファイルを開き、<b>fgetc関数</b>で1文字づつ読み込み、標準出力に出力し、<a href="/blog/20210509093506.html">fclose関数</a>でファイルを閉じています。
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+int main(void) {
+  
+  // ファイルを読み込みモードで開く
+  const char* in_file = "input.txt";
+  FILE* in_fp = fopen(in_file, "r");
+  if (in_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", in_file);
+    exit(1);
+  }
+  
+  // 読み込んで、標準出力に出力
+  int32_t ch;
+  while(ch = fgetc(in_fp)) {
+    // EOFが返ってきた場合
+    if (ch == EOF) {
+      // ファイルの末尾かチェックする
+      if (feof(in_fp)) {
+        break;
+      }
+    }
+    fputc(ch, stdout);
+  }
+  
+  // fclose関数でファイルを閉じる
+  fclose(in_fp);
+}
+</pre>
+
+入力ファイル「input.txt」です。
+
+<pre>
+Hello
+World!
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+World!
+</pre>
+
+<h3>ファイル途中でEOFが見つかったらどうなるの?</h3>
+
+ファイルの途中でEOFが見つかったら、EOFが返ります。ですので、EOFは、本当のファイル終端であるとは限らないということを覚えておきましょう。本当のファイルの末尾であることを確認するにはfeof関数を使用します。
+
+<pre>
+    // EOFが返ってきた場合
+    if (ch == EOF) {
+      // ファイルの末尾かチェックする
+      if (feof(in_fp)) {
+        break;
+      }
+    }
+</pre>
+
+<h3>fgetc関数はgetc関数と何が違うの?</h3>
+
+getc関数は、fget関数と同様に、ファイルから1文字読み出しますが、パフォーマンスの向上のために<a href="/blog/20210124140655.html">関数マクロ</a>として実装することが許可されています。fgetcは関数として実装されます。
+
+実装経験としては、getcはマクロとして実装可能なので、何らかの副作用があります。はっきりとは思い出せないのですが、FreeBSDの環境でコンパイルエラーが生じた経験があります。
+
+読み込みパフォーマンスに問題がなく、ポータビリティの問題を生じさせたくない場合は、fgetc関数を使うのがよいでしょう。

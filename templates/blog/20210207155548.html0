@@ -1,0 +1,194 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/syntax.html">
+        <span itemprop="name">基本文法</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>sizeof演算子</h2>
+
+sizeof演算子は、その型を配列の要素とした場合の型のサイズを返します。単位はバイトです。
+
+<pre>
+sizeof(型名)
+</pre>
+
+「その型を配列の要素とした場合の型のサイズ」とわかりにくい表現であるのは、sizeof演算子は、定義したサイズを必ずしも返すわけではないからです。これは、構造体のサイズをsizeof演算子で見た場合に、違いが確認できます。
+
+<h3>数値型の型のサイズ</h3>
+
+まず、<a href="/blog/20201130082751.html">int32_t</a>、<a href="/blog/20201127082751.html">int64_t</a>、<a href="/blog/20201202133213.html">float</a>、<a href="/blog/20201203133213.html">double</a>の型のサイズを見てみましょう。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+int main(void) {
+  printf("int32_t: %d, int64_t: %d, float: %d, double: %d",
+    sizeof(int32_t), sizeof(int64_t), sizeof(float), sizeof(double));
+}
+</pre>
+
+出力結果です。int32_tは4バイト、int64_tは8バイト、floatは4バイト、doubleは8バイトです。
+
+<pre>
+int32_t: 4, int64_t: 8, float: 4, double: 8
+</pre>
+
+<h3>void*型の型のサイズ</h3>
+
+汎用ポインタ型「void*」のサイズを見てみましょう。汎用ポインタ型と他のポインタ型のサイズは必ず一致します。
+
+メモリ空間が32bitのCPUでは4バイト、メモリ空間が64bitのCPUでは8バイトになります。
+
+<pre>
+#include <stdio.h>
+
+int main(void) {
+  printf("void*: %d\n", sizeof(void*));
+}
+</pre>
+
+<h3>共用体のサイズ</h3>
+
+共用体を定義した場合は、最も大きなメンバのサイズの型を配列の要素にした場合のサイズになります。
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+union myapp_value {
+  int8_t int8_val;
+  int16_t int16_val;
+  int32_t int32_val;
+  int64_t int64_val;
+};
+
+int main(void) {
+  printf("union myapp_value: %d\n", sizeof(union myapp_value));
+}
+</pre>
+
+出力結果。
+
+<pre>
+union myapp_value: 8
+</pre>
+
+一番大きなメンバのint64_tのサイズと同じになりました。
+
+<h3>構造体のサイズ</h3>
+
+<a href="/blog/20210208155548.html">構造体</a>のサイズを理解するのは、少し難しいです。さて以下のsizeof演算子は、どのような値を返すでしょうか?
+
+<pre>
+#include <stdint.h>
+#include <stdio.h>
+
+struct myapp_data {
+  int64_t int64_val;
+  int8_t int8_val1;
+  int8_t int8_val2;
+};
+
+int main(void) {
+  printf("struct myapp_data: %d\n", sizeof(struct myapp_data));
+}
+</pre>
+
+int64_tは8バイト、int8_tが二つで2バイト、合わせて10バイトです。
+
+出力結果は以下です。
+
+<pre>
+struct myapp_data: 16
+</pre>
+
+あら、結果は16です。どうして?
+
+最初に書いたようにsizeof演算子は、型のサイズというよりも「その型を配列の要素とした場合の型のサイズ」を返すからです。
+
+<h3>構造体のアラインメント</h3>
+
+「その型を配列の要素とした場合の型のサイズ」はどのように決められるのでしょうか?
+
+次の規則です。
+
+sizeofが返す構造体のサイズは、必ずメンバ変数の最大サイズの倍数になります(上記の例では一番大きなint64_tは8バイトですので、8の倍数です)。それより小さなサイズのメンバは、メンバ変数の最大サイズの倍数を超えない位置に先頭からつめて、並べられます。ただし、メンバ変数は、そのメンバ変数のサイズの倍数の位置から、並べられます。
+
+これらをデータのアラインメントと呼びます。これは、CPUの演算が速くなるような位置に、データを並べるための規則だと考えてください。
+
+上記の規則によって並べられて空いた隙間をパディングと呼びます。
+
+<pre>
+// sizeofは16を返す
+struct myapp_data {
+  int64_t int64_val; // 8バイト
+  int8_t int8_val1;  // 1バイト
+  int8_t int8_val2;  // 1バイト
+                     // 6バイトのパディング
+};
+</pre>
+
+後は、実際に例をいくつかみてみましょう。
+
+<pre>
+// sizeofは16を返す
+struct myapp_data {
+  int64_t a; // 8バイト
+  int8_t b;  // 1バイト
+  int8_t c;  // 1バイト
+  int32_t d; // 4バイト
+             // 2バイトのパディング
+};
+</pre>
+
+<pre>
+// sizeofは24を返す
+struct myapp_data {
+  int64_t a; // 8バイト
+  int8_t b;  // 1バイト
+  int8_t c;  // 1バイト
+  int32_t d; // 4バイト
+             // 2バイトのパディング
+  int32_t e; // 4バイト
+             // 4バイトのパディング
+};
+</pre>
+
+<pre>
+// sizeofは12を返す
+struct myapp_data {
+  int32_t a; // 4バイト
+  int8_t b;  // 1バイト
+  int8_t c;  // 1バイト
+             // 2バイトのパディング
+  int32_t d; // 4バイト
+};
+</pre>
+
+<pre>
+// sizeofは16を返す
+struct myapp_data {
+  int32_t a; // 4バイト
+  int8_t b;  // 1バイト
+             // 1バイトのパディング
+  int16_t c; // 2バイト
+  int8_t d;  // 1バイト
+             // 3バイトのパディング
+  int32_t e; // 4バイト
+};
+</pre>

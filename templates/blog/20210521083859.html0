@@ -1,0 +1,37 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library.html">
+        <span itemprop="name">C標準ライブラリ</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library/stdio.html">
+        <span itemprop="name">stdio.h</span>
+      </a>
+      <meta itemprop="position" content="3" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>EOF - ファイルの末尾を表す定数</h2>
+
+EOFは、ファイルの末尾を表す定数です。C言語仕様上は負の数として定義されていますが、一般的には「-1」として定義されています。<a href="/blog/20210418083246.html">stdio.h</a>ヘッダを読み込むと使えます。
+
+<pre>
+EOF
+</pre>
+
+<a href="/blog/20210519082217.html">fgetc関数</a>、<a href="/blog/20210516083039.html">getc関数</a>、getchar関数などは、ファイルの末尾に到達した場合に、EOFを返します。
+
+ただし、この値は、実際にファイルの末尾に到達したことの判定に使わないでください。読み込んだファイルの1文字が、EOFと同じであった場合に、誤判定が起こります。EOFのチェックと合わせて、feof関数を使って、ファイルの末尾に到達したことを判定してください。実際のコードは<a href="/blog/20210519082217.html">fgetc関数</a>のサンプルコードを見てください。

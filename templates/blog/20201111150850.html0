@@ -1,0 +1,55 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/types.html">
+        <span itemprop="name">C言語の型</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>uint32_t - 符号なし32bit整数型</h2>
+
+「uint32_t」は符号なし32bit整数型です。「<a href="/blog/20210220132505.html">stdint.h</a>」ヘッダをインクルードすることで使えます。<a href="/blog/20201206125815.html">C99</a>で導入された型です。
+
+<pre>
+# 符号なし32bit整数型
+uint32_t
+</pre>
+
+符号なし32bit整数型が表現できる整数の最大値は「4294967295」、最小値は「0」です。
+
+最大値は「<a href="/blog/20201110150850.html">UINT32_MAX</a>」というマクロで定義されています。
+
+<h3>uint32_tのサンプルコード</h3>
+
+uint32_tを使ったサンプルコードです。符号あり32bit整数の値を超えおり、符号なし32bit整数であることを示すために整数リテラルで「U」サフィックスを使っています。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+  uint32_t num = 4294967295U;
+  
+  printf("%u\n", num);
+}
+</pre>
+
+<a href="/blog/20210419083246.html">printf関数</a>のフォーマット指定子で「%u」を使っています。
+
+出力結果。
+
+<pre>
+4294967295
+</pre>

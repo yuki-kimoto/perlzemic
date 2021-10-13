@@ -1,0 +1,115 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library.html">
+        <span itemprop="name">C標準ライブラリ</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library/string.html">
+        <span itemprop="name">string.h</span>
+      </a>
+      <meta itemprop="position" content="3" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>memcpy関数 - メモリ領域をバイト単位でコピーする</h2>
+
+memcpy関数は、メモリ領域をバイト単位でコピーする関数です。「string.h」をインクルードします。
+
+<pre>
+#include <string.h>
+
+void *memcpy(void *buf1, const void *buf2, size_t n);
+</pre>
+
+第一引数はコピー先の<a href="/blog/20210211090234.html">アドレス</a>です。<a href="/blog/20210215090234.html">汎用ポインタ型</a>ですので、どのポインタ型でも大丈夫です。
+
+第二引数はコピー元の<a href="/blog/20210211090234.html">アドレス</a>です。<a href="/blog/20210215090234.html">汎用ポインタ型</a>ですので、どのポインタ型でも大丈夫です。
+
+第三引数にバイトサイズを指定します。size_t型です。<a href="/blog/20201130082751.html">int32_t</a>型までの範囲で0以上の数値であれば、まず安心です。0の指定は有効な引数で、この場合コピーは行われません。
+
+コピー先とコピー元のデータ領域が重なっていた場合には、動作は保証されません。コピー先とコピー元のデータ領域が重なっていた場合でも正しく動作させる場合は<a href="/blog/20210412082820.html">memmove関数</a>を使用してください。重ならない場合は、性能が優先されるmemcpy関数を使いましょう。
+
+<h3>文字列をコピーする</h3>
+
+memcpy関数で文字列をコピーするサンプルです。<a href="/blog/20210405101342.html">strlen関数</a>で、文字列の長さを取得、<a href="/blog/20210209082644.html">calloc関数</a>で、メモリ領域を確保、その領域にmemcpy関数でコピーという処理を行っています。コピー先の変数にconst修飾子がついていると、コピーできないので、const修飾子がつかない一時的な文字列にコピーしています。
+
+<pre>
+#include <stddef.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+int main(void) {
+  // 文字列
+  const char* message = "Hello";
+  
+  // 文字列の長さ
+  int32_t message_length = strlen(message);
+  
+  // メモリ領域を確保
+  char* new_message_tmp = calloc(sizeof(char), message_length + 1);
+  
+  // memcpy関数で一時的な文字列にコピー
+  memcpy(new_message_tmp, message, message_length);
+  
+  // 新しい文字列に代入(const修飾子をつけたいので)
+  const char* new_message = new_message_tmp;
+  new_message_tmp = NULL;
+  
+  printf("%s\n", new_message);
+}
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+</pre>
+
+<h3>符号あり32bit整数の配列をコピーする</h3>
+
+memcpy関数で<a href="/blog/20201130082751.html">int32_t - 符号あり32bit整数</a>の<a href="/blog/20210129143859.html">配列</a>をコピーするサンプルです。<a href="/blog/20210209082644.html">calloc関数</a>で、メモリ領域を確保、その領域にmemcpy関数でコピーという処理を行っています。コピーする長さは「要素の型のサイズ × 配列の長さ」になることに注意してください。<a href="/blog/20210115151850.html">for文</a>で、配列の要素を出力しています。
+
+<pre>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+  // 配列
+  int32_t nums_length = 3;
+  int32_t nums[] = {3, 5, 7};
+  
+  // メモリ領域を確保
+  int32_t* new_nums = calloc(sizeof(int32_t), nums_length);
+  
+  // memcpy関数でint32_t型の配列をコピー
+  memcpy(new_nums, nums, sizeof(int32_t) * nums_length);
+  
+  for (int32_t i = 0; i < nums_length; i++) {
+    printf("nums[%d]: %d\n", i, new_nums[i]);
+  }
+}
+</pre>
+
+出力結果です。
+
+<pre>
+nums[0]: 3
+nums[1]: 5
+nums[2]: 7
+</pre>

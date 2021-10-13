@@ -1,0 +1,105 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library.html">
+        <span itemprop="name">C標準ライブラリ</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library/stdio.html">
+        <span itemprop="name">stdio.h</span>
+      </a>
+      <meta itemprop="position" content="3" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>fprintf関数 - フォーマットした文字列を出力先を指定して出力</h2>
+
+<b>fprintf関数</b>は、フォーマットした文字列を出力先を指定して出力できます。<a href="/blog/20210419083246.html">printf関数</a>は、標準出力に出力しますが、出力先を指定できるのが、fprintf関数です。<a href="/blog/20210418083246.html">stdio.h</a>ヘッダを読み込むと使えます。
+
+<pre>
+#include <stdio.h>
+int fprintf(FILE *fp, const char *format, ...);
+</pre>
+
+<h3>標準出力に出力する</h3>
+
+fprintf関数を使って、標準出力に出力してみましょう。printf関数と同じことをします。<a href="/blog/20210512083754.html">stdout</a>は、標準出力ストリームを意味するFILE構造体へのポインタです。
+
+<pre>
+#include <stdio.h>
+
+int main(void) {
+  const char* message = "Hello";
+  fprintf(stdout, "%s\n", message);
+}
+</pre>
+
+出力結果です。
+
+<pre>
+Hello
+</pre>
+
+<h3>標準エラー出力に出力する</h3>
+
+fprintf関数を使って、標準エラー出力に出力してみましょう。<a href="/blog/20210511083754.html">stderr</a>は、標準エラーストリームを意味するFILE構造体へのポインタです。
+
+<pre>
+#include <stdio.h>
+
+int main(void) {
+  const char* message = "Hello";
+  fprintf(stderr, "%s\n", message);
+}
+</pre>
+
+出力結果です。エラー出力に出力されます。
+
+<pre>
+Hello
+</pre>
+
+<h3>ファイルに出力する</h3>
+
+fprintf関数を使って、ファイルに出力してみましょう。fopen関数でファイルを開いて、ファイルに書き込んでみましょう。開いたファイルはfclose関数で閉じています。
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void) {
+  
+  // 書き込み用にファイルを開く
+  const char* out_file = "output.txt";
+  FILE* out_fp = fopen(out_file, "w");
+  if (out_fp == NULL) {
+    fprintf(stderr, "Can't open file %s\n", out_file);
+    exit(1);
+  }
+  
+  // fprintf関数でファイルに書き込む
+  const char* message = "Hello";
+  fprintf(out_fp, "%s\n", message);
+  
+  // ファイルを閉じる
+  fclose(out_fp);
+}
+</pre>
+
+output.txtを開いてみましょう。以下の内容が出力されています。
+
+<pre>
+Hello
+</pre>

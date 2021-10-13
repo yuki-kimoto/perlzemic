@@ -1,0 +1,116 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/types.html">
+        <span itemprop="name">C言語の型</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>汎用ポインタ型 - void*</h3>
+
+あらゆるポインタ型を代入できるポインタ型を汎用ポインタ型「void*」があります。
+
+<pre>
+void*
+</pre>
+
+<h3>汎用ポインタ型のサンプル</h3>
+
+汎用ポインタ型のサンプルです。
+
+<h4>汎用ポインタへの代入とその逆の代入</h3>
+
+<a href="/blog/20210210082644.html">malloc関数</a>や<a href="/blog/20210209082644.html">calloc関数</a>は「void*」型の値を返します。実際に「void*」型の変数を宣言して他のポインタ型に代入してみましょう。
+
+また他のポインタ型を「void*」型に代入するのもやってみましょう。
+
+<pre>
+#include <stdint.h>
+#include <stdlib.h>
+
+int main(void) {
+  
+  void* memory_block1 = malloc(sizeof(int32_t) * 10);
+  void* memory_block2 = calloc(sizeof(int32_t), 10);
+  
+  int32_t* nums1 = memory_block1;
+  int32_t* nums2 = memory_block2;
+
+  void* memory_block1_again = nums1;
+  void* memory_block2_again = nums2;
+}
+</pre>
+
+C言語では、void*型を他のポインタ型に代入する場合も、他のポインタ型にvoid*型を代入する場合も明示的なキャストは、必要がありません。
+
+<h4>汎用ポインタ型変数へint32_t型の値を保存する</h3>
+
+これは、裏技的な方法ですが、汎用ポインタ型の変数へ、<a href="/blog/20201130082751.html">int32_t</a>型の値を保存することができます。この裏技は「配列の要素をvoid*型で実装したんだけど、あー、これに、整数も保存したいねぇ、どうやるのよ?」という場合に使えます。
+
+<pre>
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+int main(void) {
+  
+  // void*型を要素に持つ配列
+  void** objects = calloc(sizeof(void*), 10);
+  
+  // int32_t型の値をvoid*型の要素に保存
+  int32_t num = 5;
+  
+  // int32_t型ををintptr_tにキャスト、さらにvoid*に変換して代入
+  objects[1] = (void*)(intptr_t)num;
+  
+  // void*型をintptr_tへキャスト、さらにint32_t型へキャストして、取得
+  int32_t num2 = (int32_t)(intptr_t)objects[1];
+  
+  printf("%d\n", num2);
+}
+</pre>
+
+「void*型」と互換性があり、符号あり整数型とも互換性のある<a href="/blog/20210225131724.html">intptr_t型</a>のキャストを挟み込むのがポイントです。
+
+この裏技的テクニックを使う場合は、32bit環境と64bit環境の両方で動作させるために、int32_tを使うことに注意してください。<a href="/blog/20201127082751.html">int64_t</a>を使うと、32bit環境では、正しく動きません。符号なし32bit整数型の<a href="/blog/20201111150850.html">uint32_t</a>は、問題なく使うことができます。
+
+浮動小数点を保存したい場合は<a href="/blog/20201202133213.html">float</a>なら32bit幅なのでOKです。<a href="/blog/20201203133213.html">double</a>は64bit幅なので、アウトです。
+
+<h3>void型とvoid*型のvoidは同じ意味?</h3>
+
+いいえ、void型のvoidは「存在しない」ということを表現する特殊な型です。
+
+一方、「void*型」のvoidの部分は「汎用(どんな型でも)」を意味しています。
+
+<h3>void*から他のポイント型への明示的キャストについてどう思いますか?</h3>
+
+void*から他のポイント型への明示的キャストについてどう思いますか?
+
+以下のような書き方ですね。
+
+<pre>
+  void* memory_block1 = malloc(sizeof(int32_t) * 10);
+  int32_t* nums1 = (int32_t*)memory_block1;
+</pre>
+
+これは、C言語仕様では、特に求められていないことです。一方、C++仕様では、求められていることです。
+
+もしC++について意識する必要ないのであれば、C言語にとっては冗長な書き方になっています。
+
+冗長ですが、もし書いてあっても特別悪い影響はないと思います。
+
+書いていても、特別良い影響があるわけでもないと思います。
+
+言語論争なようなものに巻き込まれがちな分野でもありますが、実用的には、そんなに気にすることはないと思います。

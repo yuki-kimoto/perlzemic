@@ -1,0 +1,202 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/compile.html">
+        <span itemprop="name">コンパイル</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>共有ライブラリの作成と利用方法</h2>
+
+Unix/Linuxにおける共有ライブラリの作成と利用方法を解説します。この記事は、<a href="/blog/20210622081112.html">分割コンパイル手法</a>を理解していることが前提です。
+
+<h3>共有ライブラリとは</h3>
+
+共有ライブラリとは、実行ファイル生成時に、静的にリンクせず、実行時に、リンク可能なオブジェクトファイルのことです。共有ライブラリは、リンク時にリンクすることが可能で、かつ、実行時に読み込むこともできます。拡張子は「.so」です。
+
+ここで解説する、共有ライブラリは、UNIX/Linuxの仕組みであって、MacやWindowsの仕組みではないことに注意してください。Macの場合は、拡張子が異なります。Windowsには、DLL(ダイナミックリンクライブラリ)という似た仕組みがありますが、UNIX/Linuxの共有ライブラリとは異なります。
+
+<h3>共有ライブラリの作成方法</h3>
+
+共有ライブラリを作成するには「-shared」オプションを指定します。一般的には、「-fPIC」を指定して<a href="https://ja.wikipedia.org/wiki/%E4%BD%8D%E7%BD%AE%E7%8B%AC%E7%AB%8B%E3%82%B3%E3%83%BC%E3%83%89">位置独立コード</a>として作成します。
+
+オブジェクトファイル生成する手順に、「-shared」と「-fPIC」オプションを追加して、以下のようにします。
+
+<pre>
+# 通常のコンパイル - オブジェクトファイルの作成
+gcc -Iinclude -c -o mylib1.o src/mylib1.c
+
+# 共有ライブラリの作成
+gcc -Iinclude -c -shared -fPIC -o mylib1.so src/mylib1.c
+</pre>
+
+<h3>共有ライブラリを作成してリンクする</h3>
+
+この手順は<a href="/blog/20210622081112.html">分割コンパイル手法</a>で使った手順を流用できます。ライブラリを共有ライブラリとして作成します。
+
+<h4>アプリケーションのソースファイル</h4>
+
+アプリケーションのソースファイル「myapp.c」です。
+
+<b>myapp.c</b>
+
+<pre>
+#include <stdio.h>
+
+#include "mylib1.h"
+#include "mylib2.h"
+
+int main(void) {
+  
+  mylib1_print();
+  mylib2_print();
+}
+</pre>
+
+<h4>ライブラリのヘッダファイル</h4>
+
+ライブラリのヘッダファイル「mylib1.h」と「mylib2.h」です。
+
+<b>mylib1.h</b>
+
+<pre>
+#ifndef MYLIB1_H
+#define MYLIB1_H
+
+void mylib1_print (void);
+
+#endif
+</pre>
+
+<b>mylib2.h</b>
+
+<pre>
+#ifndef MYLIB2_H
+#define MYLIB2_H
+
+void mylib2_print (void);
+
+#endif
+</pre>
+
+<h4>ライブラリのソースファイル</h4>
+
+ライブラリのソースファイル「mylib1.c」と「mylib2.c」です。
+
+<b>mylib1.c</b>
+
+<pre>
+#include <stdio.h>
+
+#include "mylib1.h"
+
+void mylib1_print (void) {
+  printf("mylib1_print\n");
+}
+</pre>
+
+<b>mylib2.c</b>
+
+<pre>
+#include <stdio.h>
+
+#include "mylib2.h"
+
+void mylib2_print (void) {
+  printf("mylib2_print\n");
+}
+</pre>
+
+<h4>コンパイル</h4>
+
+アプリケーションのソースファイルと、共有ライブラリのソースファイルを、それぞれ<a href="/blog/20201214140830.html">コンパイルし</a>ます。ヘッダファイルの場所をオプション「-I」で指定します。「-shared」と「-fPIC」オプションを使って、共有ライブラリを作成します。
+
+<pre>
+gcc -Iinclude -c -o myapp.o src/myapp.c
+gcc -Iinclude -c -shared -fPIC -o mylib1.so src/mylib1.c
+gcc -Iinclude -c -shared -fPIC -o mylib2.so src/mylib2.c
+</pre>
+
+<h4>リンク - 実行ファイルの作成</h4>
+
+<a href="/blog/20201215105104.html">リンク</a>して実行ファイルを作成します。関数名などのシンボルが、実体に結びつけられます。
+
+<pre>
+gcc -o myapp myapp.o mylib1.so mylib2.so
+</pre>
+
+<h4>実行</h4>
+
+実行ファイルを<a href="/blog/20201216101527.html">実行</a>してみましょう。
+
+<pre>
+./myapp
+</pre>
+
+出力結果です。
+
+<pre>
+mylib1_print
+mylib2_print
+</pre>
+
+共有ライブラリを作成して、実行ファイルを作成するときに、リンクする方法をマスターしました。
+
+<h3>実行時に共有ライブラリを読み込んで、関数を実行するには?</h3>
+
+実行時に共有ライブラリを読み込んで、関数を実行する手順だけを公開します。
+
+1. dlopen関数で、共有ライブラリをオープンします。
+
+2. dlsymで関数名を指定して、関数ポインタを取得します。
+
+3. 関数ポインタから関数を実行します。
+
+<h3>共有ライブラリに含まれている関数名などのシンボルを知るには?</h3>
+
+共有ライブラリに含まれている関数名などのシンボルを知るには「nm」コマンドを使用します。「name」の略のようです。
+
+<pre>
+nm mylib1.so
+</pre>
+
+出力結果です。
+
+<pre>
+                 U _GLOBAL_OFFSET_TABLE_
+0000000000000000 T mylib1_print
+                 U puts
+</pre>
+
+nmコマンドは、共有ライブラリだけでなく、実行ファイルやオブジェクトファイルにも使えます。
+
+<h3>共有ライブラリの検索</h3>
+
+共有ライブラリは、衝突を回避する仕組みを持っています。共有ライブラリは、ファイル名を直接してししなくても「-L」オプションで、共有ライブラリの検索ディレクトリを指定できます。ライブラリ名は「lib」で始まっている必要があります。
+
+
+共有ライブラリの検索ディレクトリに、共有ライブラリを配置すれば、「-l」オプションで指定された、最初に見つかった共有ライブラリを利用します。「-l」オプションでは、先頭の「lib」と「.so」を省略します。
+
+<b>共有ライブラリ</b>
+
+<pre>
+/foo/lib/libmylib1.so
+</pre>
+
+<b>共有ライブラリのリンク</b>
+
+<pre>
+gcc -o myapp myapp.o -L /foo/lib -l mylib1
+</pre>

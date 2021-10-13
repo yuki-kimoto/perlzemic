@@ -1,0 +1,164 @@
+<h2>C言語における動的配列は自作するかライブラリを使う</h2>
+
+C言語には、<a href="/blog/20210129143859.html">静的配列</a>と動的にメモリ確保を行う方法はありますが、動的配列ライブラリがありませんので、自作するかライブラリを使います。
+
+なぜ動的配列という使用頻度の高いライブラリがないのかというと、ライブラリの内部でメモリ確保が必要なライブラリは、C言語のコアには入らないという方針があるような気がします。
+
+動的配列の例として<a href="https://github.com/yuki-kimoto/SPVM/blob/master/lib/SPVM/Builder/src/spvm_list.c">プログラミング言語SPVMの内部実装で使用している動的配列の実装例</a>を一つのサンプルとして書いておきます。
+
+依存はないので、ヘッダとソースをコピペして使うことができます。
+
+<h3>C言語における動的配列の実装例</h3>
+
+解説はないですが、動的配列の作成、配列の要素の取得と設定、先頭や末尾から取り出しという基本的な関数だけですので、ヘッダを見れば、使い方はわかると思います。配列の要素は<a href="/blog/20210215090234.html">汎用ポインタ型 void*</a>です。
+
+<h4>spvm_list.h</h4>
+
+動的配列のヘッダです。
+
+<pre>
+#ifndef SPVM_LIST_H
+#define SPVM_LIST_H
+
+#include <stdint.h>
+#include <stddef.h>
+
+struct spvm_list;
+typedef struct spvm_list SPVM_LIST;
+
+struct spvm_list {
+  void** values;
+  int32_t length;
+  int32_t capacity;
+};
+
+SPVM_LIST* SPVM_LIST_new(int32_t capacity);
+void SPVM_LIST_free(SPVM_LIST* array);
+void SPVM_LIST_maybe_extend(SPVM_LIST* array);
+
+void SPVM_LIST_push(SPVM_LIST* array, void* value);
+void* SPVM_LIST_fetch(SPVM_LIST* array, int32_t index);
+void SPVM_LIST_store(SPVM_LIST* array, int32_t index, void* value);
+void* SPVM_LIST_pop(SPVM_LIST* array);
+void* SPVM_LIST_shift(SPVM_LIST* array);
+
+#endif
+</pre>
+
+<h4>spvm_list.c</h4>
+
+動的配列の実装です。
+
+<pre>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "spvm_list.h"
+
+SPVM_LIST* SPVM_LIST_new(int32_t capacity) {
+  
+  assert(capacity >= 0);
+  
+  SPVM_LIST* array = calloc(1, sizeof(SPVM_LIST));
+  
+  array->length = 0;
+  
+  if (capacity == 0) {
+    array->capacity = 1;
+  }
+  else {
+    array->capacity = capacity;
+  }
+  
+  void** values = calloc(array->capacity, sizeof(void*));
+  
+  array->values = values;
+  
+  return array;
+}
+
+void SPVM_LIST_maybe_extend(SPVM_LIST* array) {
+  
+  assert(array);
+  
+  int32_t length = array->length;
+  int32_t capacity = array->capacity;
+  
+  if (length >= capacity) {
+    int32_t new_capacity = capacity * 2;
+    
+    void** new_values = calloc(new_capacity, sizeof(void*));
+    memcpy(new_values, array->values, capacity * sizeof(void*));
+    free(array->values);
+    array->values = new_values;
+    
+    array->capacity = new_capacity;
+  }
+}
+
+void SPVM_LIST_free(SPVM_LIST* array) {
+  
+  free(array->values);
+  free(array);
+}
+
+void SPVM_LIST_push(SPVM_LIST* array, void* value) {
+  
+  SPVM_LIST_maybe_extend(array);
+  
+  int32_t length = array->length;
+  
+  *(void**)&array->values[length] = value;
+  array->length++;
+}
+
+void* SPVM_LIST_fetch(SPVM_LIST* array, int32_t index) {
+  assert(array);
+  assert(index >= 0);
+  assert(index < array->length);
+  
+  
+  return *(void**)&array->values[index];
+}
+
+void SPVM_LIST_store(SPVM_LIST* array, int32_t index, void* value) {
+  
+  assert(array);
+  assert(index >= 0);
+  assert(index < array->length);
+  
+  *(void**)&array->values[index] = value;
+}
+
+void* SPVM_LIST_pop(SPVM_LIST* array) {
+  
+  assert(array->length >= 0);
+  
+  if (array->length == 0) {
+    return NULL;
+  }
+  else {
+    array->length--;
+    return *(void**)&array->values[array->length];
+  }
+}
+
+void* SPVM_LIST_shift(SPVM_LIST* array) {
+  
+  assert(array->length >= 0);
+  
+  if (array->length == 0) {
+    return NULL;
+  }
+  else {
+    void* return_value = array->values[0];
+    for (int32_t i = 0; i < array->length - 1; i++) {
+      array->values[i] = array->values[i + 1];
+    }
+
+    array->length--;
+    return return_value;
+  }
+}
+</pre>

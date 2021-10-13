@@ -1,0 +1,100 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/syntax.html">
+        <span itemprop="name">基本文法</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>C言語の真偽値</h2>
+
+C言語の真偽値についての解説です。
+
+<h3>C言語の真偽値</h3>
+
+C言語では0は偽値で、それ以外が真値です。非常にシンプルです。NULLは、C言語では0と等価として定義されるので、偽値です。
+
+<table>
+  <tr>
+    <th>真値</th><td>0以外</td>
+  </tr>
+  <tr>
+    <th>偽値</th><td>0</td>
+  </tr>
+</table>
+
+<a href="/blog/20201224090954.html">if文</a>で真偽値を使ってみましょう。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+  int32_t flag = 1;
+  // int32_t flag = 0;
+  
+  if (flag) {
+    printf("OK\n");
+  }
+  else {
+    printf("Not OK\n");
+  }
+}
+</pre>
+
+flagが1の時は「OK」、0のときは「Not OK」と表示されます。
+
+NULLも使ってみましょう。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+  const char* string = "Hello";
+  // const char* string = NULL;
+  
+  if (string) {
+    printf("OK\n");
+  }
+  else {
+    printf("Not OK\n");
+  }
+}
+</pre>
+
+文字列が代入されているときは「OK」、NULLが代入されているときは「Not OK」と表示されます。
+
+<h3>C言語には真偽値型は存在しますか?</h3>
+
+<a href="/blog/20201206125815.html">C99</a>でstdbool.hが導入され_Bool型が追加されました。
+
+1か0にしかならない型です。
+
+ただし処理系が1bitで実装するということは考えにくく、最低1バイト使うので、汎用的に使える<a href="/blog/20201117090747.html">int8_t</a>でよいかもしれないとも思います。
+
+普段は<a href="/blog/20201130082751.html">int32_t</a>を使って、サイズを節約したい場合はint8_tみたいな。
+
+使うかどうかの判断はお任せします。僕の評価は、あってもよいけど、ないならないでよいという感じです。
+
+<h3>Perlの真偽値との違いは?</h3>
+
+C言語の真偽値は<a href="https://perlzemi.com/blog/20080323120628.html">Perlの真偽値</a>と似ています。
+
+C言語では、0が偽値で、それ以外が真です。NULLは、0と等価として定義されているので、偽になります。
+
+Perlでは、数値0, 文字列の0, undef, 空文字列, 空のリストが、偽値で、それ以外は真です。
+
+体感としては真偽値は、PerlとC言語は似た感覚で使えます。

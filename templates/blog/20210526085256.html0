@@ -1,0 +1,40 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library.html">
+        <span itemprop="name">C標準ライブラリ</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library/stdio.html">
+        <span itemprop="name">stdio.h</span>
+      </a>
+      <meta itemprop="position" content="3" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>ftell関数 - ファイルストリームの位置指定子の位置を取得</h2>
+
+ftell関数を使うと、ファイルストリームの位置指定子が指す位置を取得できます。<a href="/blog/20210418083246.html">stdio.h</a>ヘッダを読み込むと使えます。
+
+<pre>
+#include <stdio.h>
+long int ftell(FILE *fp);
+</pre>
+
+引数は、ファイルストリームです。戻り値は、ファイルストリームの位置指定子が指す位置です。
+
+<h3>ファイルサイズを取得するサンプル</h3>
+
+fseek関数とftell関数を使って、ファイルサイズを取得するサンプルを<a href="/blog/20210525075439.html">fseek関数</a>の記事で書きましたので参考にしてください。

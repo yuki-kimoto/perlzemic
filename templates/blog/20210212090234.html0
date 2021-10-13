@@ -1,0 +1,259 @@
+<h2>オブジェクト指向C言語</h2>
+
+C言語をオブジェクト指向で書く方法を解説します。
+
+オブジェクト指向型言語とは、僕の解釈では、オブジェクト指向の考え方を使いやすくした言語のことです。
+
+つまり、オブジェクト指向プログラミングは、どんなプログラミング言語でもできるのだけれど、それをやりやすくしたプログラミング言語が存在するというわけです。
+
+結論を書くと「C言語でもオブジェクト指向できるよ! 記述はちょっと面倒だけどね。」
+
+<h3>クラスに該当するのは構造体</h3>
+
+クラスに該当するのは<a href="/blog/20210208155548.html">構造体</a>です。フィールドに該当するのは構造体のメンバ変数です。ヘッダの相互参照などの問題を解決するために、typedef文で、別名をつけています(このテクニックについては<a href="/blog/20210202153503.html">型宣言ヘッダ</a>を参照してください)。
+
+<pre>
+// strcut myapp_lib に MYAPP_LIBという別名をつける
+typedef struct myapp_lib MYAPP_LIB;
+
+// クラスに該当するのは構造体
+struct myapp_lib {
+  // フィールドに該当するのはメンバ変数
+  int32_t flag;
+};
+</pre>
+
+<h3>コンストラクタは関数</h3>
+
+コンストラクタはオブジェクトを返す関数です。このページでは、動的にメモリに割り当てられた構造体のメモリ領域を指すポインタを、オブジェクトと呼ぶことにします。
+
+<pre>
+// コンストラクタは関数
+MYAPP_LIB* MYAPP_LIB_new() {
+  // 動的メモリ割り当てでオブジェクトを生成
+  MYAPP_LIB* self = calloc(sizeof(MYAPP_LIB), 1);
+  
+  // オブジェクトを返す
+  return self;
+}
+
+// フラグをセットできるコンストラクタ
+MYAPP_LIB* MYAPP_LIB_new_with_flag(int32_t flag) {
+  
+  MYAPP_LIB* self = MYAPP_LIB_new();
+  self->flag = flag;
+  
+  return self;
+}
+</pre>
+
+<h3>メソッドは、オブジェクトを第一引数に取る関数</h3>
+
+メソッドは、オブジェクトを第一引数に取る関数です。
+
+<pre>
+// フラグをセット
+void MYAPP_LIB_set_flag(MYAPP_LIB* self, int32_t flag) {
+  self->flag = flag;
+}
+
+// フラグをゲット
+int32_t MYAPP_LIB_get_flag(MYAPP_LIB* self) {
+  return self->flag;
+}
+</pre>
+
+<h3>デストラクタは関数</h3>
+
+デストラクタは関数です。これは、手動で呼ぶ必要があります。
+
+<pre>
+void MYAPP_LIB_free(MYAPP_LIB* self) {
+  
+  // メモリ割り当て解放
+  free(self);
+}
+</pre>
+
+<h3>オブジェクト指向プログラミングのサンプル</h3>
+
+オブジェクト指向プログラミングのサンプルです。
+
+<pre>
+#include <stdio.h>
+#include <stdlib.h>
+
+// strcut myapp_lib に MYAPP_LIBという別名をつける
+typedef struct myapp_lib MYAPP_LIB;
+
+// クラスに該当するのは構造体
+struct myapp_lib {
+  // フィールドに該当するのはメンバ変数
+  int32_t flag;
+};
+
+// コンストラクタは関数
+MYAPP_LIB* MYAPP_LIB_new() {
+  // 動的メモリ割り当てでオブジェクトを生成
+  MYAPP_LIB* self = calloc(sizeof(MYAPP_LIB), 1);
+  
+  // オブジェクトを返す
+  return self;
+}
+
+// フラグをセットできるコンストラクタ
+MYAPP_LIB* MYAPP_LIB_new_with_flag(int32_t flag) {
+  
+  MYAPP_LIB* self = MYAPP_LIB_new();
+  self->flag = flag;
+  
+  return self;
+}
+
+// フラグをセット
+void MYAPP_LIB_set_flag(MYAPP_LIB* self, int32_t flag) {
+  self->flag = flag;
+}
+
+// フラグをゲット
+int32_t MYAPP_LIB_get_flag(MYAPP_LIB* self) {
+  return self->flag;
+}
+
+void MYAPP_LIB_free(MYAPP_LIB* self) {
+  
+  // メモリ割り当て解放
+  free(self);
+}
+
+int main(void) {
+  // オブジェクト生成
+  MYAPP_LIB* myapp_lib = MYAPP_LIB_new();
+  
+  // メソッド呼び出し
+  MYAPP_LIB_set_flag(myapp_lib, 5);
+  int32_t myapp_lib_flag = MYAPP_LIB_get_flag(myapp_lib);
+  printf("%d\n", myapp_lib_flag);
+  
+  // オブジェクトの解放
+  MYAPP_LIB_free(myapp_lib);
+}
+</pre>
+
+<h3>分割コンパイル対応 - オブジェクト指向プログラミングのサンプル</h3>
+
+オブジェクト指向プログラミングのサンプルを分割コンパイル対応してみましょう。これでC言語のプログラムが、実戦で大きなプログラムになってきた場合も安心です。
+
+<h4>myapp_typedecl.h</h4>
+
+<pre>
+#ifndef MYAPP_TYPEDECL_H
+#define MYAPP_TYPEDECL_H
+
+// strcut mylib に MYLIBという別名をつける
+typedef struct myapp_lib MYAPP_LIB;
+
+#endif
+</pre>
+
+<h4>myapp_lib.h</h4>
+
+<pre>
+#ifndef MYAPP_LIB_H
+#define MYAPP_LIB_H
+
+#include "myapp_typedecl.h"
+
+struct myapp_lib {
+  int32_t flag;
+};
+
+MYAPP_LIB* MYAPP_LIB_new();
+MYAPP_LIB* MYAPP_LIB_new_with_flag(int32_t flag);
+void MYAPP_LIB_set_flag(MYAPP_LIB* self, int32_t flag);
+int32_t MYAPP_LIB_get_flag(MYAPP_LIB* self);
+void MYAPP_LIB_free(MYAPP_LIB* self);
+
+#endif
+</pre>
+
+<h4>myapp_lib.c</h4>
+
+<pre>
+#include <stdlib.h>
+
+#include "myapp_lib.h"
+
+// コンストラクタは関数
+MYAPP_LIB* MYAPP_LIB_new() {
+  // 動的メモリ割り当てでオブジェクトを生成
+  MYAPP_LIB* self = calloc(sizeof(MYAPP_LIB), 1);
+  
+  // オブジェクトを返す
+  return self;
+}
+
+// フラグをセットできるコンストラクタ
+MYAPP_LIB* MYAPP_LIB_new_with_flag(int32_t flag) {
+  
+  MYAPP_LIB* self = MYAPP_LIB_new();
+  self->flag = flag;
+  
+  return self;
+}
+
+// フラグをセット
+void MYAPP_LIB_set_flag(MYAPP_LIB* self, int32_t flag) {
+  self->flag = flag;
+}
+
+// フラグをゲット
+int32_t MYAPP_LIB_get_flag(MYAPP_LIB* self) {
+  return self->flag;
+}
+
+void MYAPP_LIB_free(MYAPP_LIB* self) {
+  
+  // メモリ割り当て解放
+  free(self);
+}
+</pre>
+
+<h4>myapp.c</h4>
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+#include "myapp_lib.h"
+
+int main(void) {
+  // オブジェクト生成
+  MYAPP_LIB* myapp_lib = MYAPP_LIB_new();
+  
+  // メソッド呼び出し
+  MYAPP_LIB_set_flag(myapp_lib, 5);
+  int32_t myapp_lib_flag = MYAPP_LIB_get_flag(myapp_lib);
+  printf("%d\n", myapp_lib_flag);
+  
+  // オブジェクトの解放
+  MYAPP_LIB_free(myapp_lib);
+}
+</pre>
+
+<h4>コンパイル・リンク・実行</h4>
+
+<pre>
+gcc -c myapp_lib.c
+gcc -c myapp.c
+gcc -o myapp myapp.o myapp_lib.o
+./myapp
+</pre>
+
+<h3>継承はできますか?</h3>
+
+C言語では、継承の機能を手動で実装することは容易ではないので、移譲を使いましょう。
+
+移譲は、メンバ変数に、必要な機能を提供するオブジェクトを保存しておくテクニックのことです。
+
+継承がないから、アプリケーションの機能を満たせないということはないので、安心してください。

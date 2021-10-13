@@ -1,0 +1,46 @@
+<div class="bread">
+  <ul itemscope itemtype="http://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/">
+        <span itemprop="name">C言語</span>
+      </a>
+      <meta itemprop="position" content="1" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library.html">
+        <span itemprop="name">C標準ライブラリ</span>
+      </a>
+      <meta itemprop="position" content="2" />
+    </li>
+    <li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+      <a itemprop="item" href="/library/stdint.html">
+        <span itemprop="name">stdint.h</span>
+      </a>
+      <meta itemprop="position" content="3" />
+    </li>
+    <li>
+      here
+    </li>
+  </ul>
+</div>
+
+<h2>UINT16_MAX - uint16_tの最大値を表す定数</h2>
+
+UINT16_MAXは<a href="/blog/20201120084622.html">uint16_t</a>の最大値を表す定数です。<a href="/blog/20201206125815.html">C99</a>で導入された<a href="/blog/20210302083009.html">定数マクロ</a>です。
+
+<pre>
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+  printf("%u\n", UINT16_MAX);
+}
+</pre>
+
+<a href="/blog/20210419083246.html">printf関数</a>のフォーマット指定子で「%u」を使っています。
+
+出力されたUINT16_MAXの値です。
+
+<pre>
+65535
+</pre>
